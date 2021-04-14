@@ -7,6 +7,13 @@
 
 import Foundation
 
+// Used for Griding
+struct Topics: Identifiable {
+    var id = UUID()
+    var values: [Topic]
+    
+}
+
 struct Topic: Identifiable, Hashable {
     var id = UUID()
     var emoji: String

@@ -10,22 +10,24 @@ import SwiftUI
 
 
 struct ContentView: View {
-    
+    @EnvironmentObject var data: AppManagerViewModel
     var body: some View {
-        TabView(selection: /*@START_MENU_TOKEN@*/.constant(1)/*@END_MENU_TOKEN@*/,
-                content:  {
-                    HomeView()
-                        .tabItem {
-                            Image(systemName: "newspaper.fill")
-                            
-                        }.tag(1)
-                    ConfigurationsView()
-                        .tabItem {
-                            Image(systemName: "star.square.fill")
-                            
-                        }.tag(2)
-                })
-            .accentColor(.mainColor)
+        TabView(selection: .constant(1)) {
+            HomeView()
+                .tabItem {
+                    Image(systemName: "newspaper.fill")
+                    
+                }.tag(1)
+            ConfigurationsView()
+                .tabItem {
+                    Image(systemName: "star.square.fill")
+                    
+                }.tag(2)
+        }
+        .accentColor(.mainColor)
+        .sheet(isPresented: $data.showProfileView) {
+            ProfileView()
+        }
     }
     
 }
@@ -33,6 +35,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(AppManagerViewModel())
         //        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct ConfigurationsView: View {
-    @State var selectedTab: TabBarView.Tabs = .foryou {
-        didSet {
-            // Store locally
-        }
-    }
+    @EnvironmentObject var app: AppManagerViewModel
     @State private var offsetX: CGFloat = .zero
     private let width = UIScreen.main.bounds.size.width
     
     var body: some View {
         VStack(spacing: 0) {
-                    NavBarView()
-            TabBarView(selectedTab: $selectedTab)
+            NavBarView()
+            TabBarView(selectedTab: $app.selectedHeaderTab)
             
             GeometryReader { geo in
                 HStack(spacing: 0) {
@@ -29,7 +25,7 @@ struct ConfigurationsView: View {
                         .frame(width: geo.frame(in: .global).width)
                     TopicsView()
                         .frame(width: geo.frame(in: .global).width)
-                    
+
                 }
                 .offset(x: offsetX)
                 .highPriorityGesture(
@@ -37,28 +33,27 @@ struct ConfigurationsView: View {
                         .onEnded({ value in
                             print(value.translation.width)
                             if value.translation.width > 50 { // Minimum Drag
-                                
-                                print("Right")
-                                updateTabs(left: false)
+
+                                app.updateTabs(swipeLeft: false)
                             }
                             if -value.translation.width > 50 {
-                                updateTabs(left: true)
+                                app.updateTabs(swipeLeft: true)
                                 print("Left")
                             }
                         })
                 )
             }
-
+            
         }
-        .onChange(of: selectedTab, perform: updateLayout)
+        .onChange(of: app.selectedHeaderTab, perform: updateLayout)
         .animation(.default)
         .foregroundColor(.systemWhite)
-//        .background(Color.mainColor)
+        //        .background(Color.mainColor)
         
         
     }
     
-    private func updateLayout(tab: TabBarView.Tabs) {
+    private func updateLayout(tab: Tabs) {
         switch tab {
         case .foryou:
             offsetX = 0
@@ -69,83 +64,63 @@ struct ConfigurationsView: View {
         }
     }
     
-    private func updateTabs(left: Bool) {
-        
-        if left {
-            
-            switch selectedTab {
-            case .foryou:
-                selectedTab = .notification
-            case .notification:
-                selectedTab = .topics
-            default: break
-            }
-        } else {
-            switch selectedTab {
-            case .topics:
-                selectedTab = .notification
-            case .notification:
-                selectedTab = .foryou
-            default: break
-            }
-        }
-        
-    }
-
 }
 
 struct ConfigurationsView_Previews: PreviewProvider {
     static var previews: some View {
         ConfigurationsView()
-            
+            .environmentObject(AppManagerViewModel())
+        
     }
 }
 
-struct TabBarView: View {
-    
+extension ConfigurationsView {
     public enum Tabs: String, CaseIterable {
         case foryou = "For you"
         case notification = "Notification"
         case topics = "Topics"
     }
-    
-    @Binding var selectedTab: Tabs
-    
-    @Namespace private var animation
-    
-    var body: some View {
-        HStack(spacing: 20) {
-            ForEach(Tabs.allCases, id: \.self) { tab in
-                Text(tab.rawValue)
-                    .textCase(.uppercase)
-                    .font(Font.system(size: 16).bold())
-                    .padding(.vertical, 15)
-                    .overlay(
-                        ZStack {
-                            if selectedTab == tab {
-                                Color.systemWhite
-                                    .frame(height: 5)
-                                    .matchedGeometryEffect(id: "Tab", in: animation)
-                            } else {
-                                Color.clear
-                                    .frame(height: 5)
+    private struct TabBarView: View {
+
+        @Binding var selectedTab: ConfigTabs
+
+        @Namespace private var animation
+
+        var body: some View {
+            HStack(spacing: 20) {
+                ForEach(ConfigTabs.allCases, id: \.self) { tab in
+                    Text(tab.rawValue)
+                        .textCase(.uppercase)
+                        .font(Font.system(size: 16).bold())
+                        .padding(.vertical, 15)
+                        .overlay(
+                            ZStack {
+                                if selectedTab == tab {
+                                    Color.systemWhite
+                                        .frame(height: 5)
+                                        .matchedGeometryEffect(id: "Tab", in: animation)
+                                } else {
+                                    Color.clear
+                                        .frame(height: 5)
+                                }
+
+                            }, alignment: .bottom
+                        )
+                        .onTapGesture {
+                            withAnimation(.spring()) {
+                                selectedTab = tab
                             }
-                            
-                        }, alignment: .bottom
-                    )
-                    .onTapGesture {
-                        withAnimation(.spring()) {
-                            selectedTab = tab
                         }
-                    }
+                }
             }
+            .foregroundColor(.systemWhite)
+            .font(.system(size: 16, weight: .light))
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 8)
+            .background(Color.mainColor)
         }
-        .foregroundColor(.systemWhite)
-        .font(.system(size: 16, weight: .light))
-        .frame(maxWidth: .infinity)
-        .padding(.bottom, 8)
-        .background(Color.mainColor)
     }
+//
 }
 
 struct ForyouView: View {
@@ -157,7 +132,7 @@ struct ForyouView: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(.gray)
                 Button(action: {
-                    
+
                 }, label: {
                     Text("SELECT YOUR TOPICS")
                         .font(Font.caption.bold())
@@ -165,7 +140,7 @@ struct ForyouView: View {
                 })
             }
             .padding(4)
-            
+
             Spacer()
         }
     }
@@ -181,12 +156,6 @@ struct NotificationView: View {
     }
 }
 
-
-struct Topics: Identifiable {
-    var id = UUID()
-    var values: [Topic]
-    
-}
 
 struct TopicsView: View {
     private let size = UIScreen.main.bounds.size
@@ -205,7 +174,7 @@ struct TopicsView: View {
                     ForEach(allTopics) { allTopic in
                         HStack(spacing: 12) {
                             ForEach(allTopic.values) { topic in
-                                
+
                                 Text(topic.title)
                                     .font(.system(size: 17))
                                     .fontWeight(.light)
@@ -247,13 +216,13 @@ struct TopicsView: View {
         .background(Color.mainColor)
 
     }
-    
+
     private func energize() {
         for topic in Topic.examples {
             addTopic(topic)
         }
     }
-    
+
     private func addTopic(_ topic: Topic) {
         let itemSize = allTopics[index].values.map(topicsize).reduce(0, +)
         let topicSize = topicsize(topic)
@@ -266,7 +235,7 @@ struct TopicsView: View {
             allTopics[index].values.append(topic)
         }
     }
-    
+
     private func topicsize(_ topic: Topic) -> CGFloat {
         let margins: CGFloat = 5
         let paddings: CGFloat = 30
