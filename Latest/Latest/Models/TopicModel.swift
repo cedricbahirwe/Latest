@@ -8,7 +8,7 @@
 import Foundation
 
 // Used for Griding
-struct Topics: Identifiable {
+struct Topics: Identifiable, Hashable {
     var id = UUID()
     var values: [Topic]
     
@@ -29,7 +29,7 @@ struct Topic: Identifiable, Hashable {
         Topic(emoji: "🎓", title: "Education"),
         Topic(emoji: "🏛", title: "Policy"),
         Topic(emoji: "🔬", title: "Science"),
-        Topic(emoji: "📊", title: "Finace"),
+        Topic(emoji: "📊", title: "Finance"),
         Topic(emoji: "🎮", title: "Gaming"),
         Topic(emoji: "⌚️", title: "Hardware"),
         Topic(emoji: "📺", title: "Entertainment and Media"),

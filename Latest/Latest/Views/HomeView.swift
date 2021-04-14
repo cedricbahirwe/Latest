@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct HomeView: View {
-    let topNews: News = .defaultTopNews
     @EnvironmentObject var data: AppManagerViewModel
     var body: some View {
         VStack(spacing: 0) {
             NavBarView()
-            
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    
+                    TopHeaderView(news: .defaultTopNews)
+
                     ForEach(data.allNews, content: NewsRowView.init)
                 }
             }

@@ -7,12 +7,10 @@
 
 import SwiftUI
 
-
-
 struct ContentView: View {
     @EnvironmentObject var data: AppManagerViewModel
     var body: some View {
-        TabView(selection: .constant(1)) {
+        TabView(selection: $data.selectedHomeTab) {
             HomeView()
                 .tabItem {
                     Image(systemName: "newspaper.fill")

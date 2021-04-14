@@ -10,6 +10,7 @@ import SwiftUI
 typealias ConfigTabs = ConfigurationsView.Tabs
 
 class AppManagerViewModel: ObservableObject {
+    @Published public var selectedHomeTab: Int = 1
     @Published public var showProfileView: Bool = false
     @Published public var showBookmarkView: Bool = false
     
@@ -26,10 +27,9 @@ class AppManagerViewModel: ObservableObject {
 }
 
 extension AppManagerViewModel {
-    public func updateTabs(swipeLeft: Bool) {
+    public func updateTabs(with swipeValue: DragGesture.Value) {
         
-        if swipeLeft {
-            
+        if (-swipeValue.translation.width > 50)  {
             switch selectedHeaderTab {
             case .foryou:
                 selectedHeaderTab = .notification
@@ -37,7 +37,9 @@ extension AppManagerViewModel {
                 selectedHeaderTab = .topics
             default: break
             }
-        } else {
+        }
+        
+        if (swipeValue.translation.width > 50) {
             switch selectedHeaderTab {
             case .topics:
                 selectedHeaderTab = .notification

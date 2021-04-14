@@ -19,9 +19,9 @@ struct ConfigurationsView: View {
             
             GeometryReader { geo in
                 HStack(spacing: 0) {
-                    ForyouView()
+                    ForyouView
                         .frame(width: geo.frame(in: .global).width)
-                    NotificationView()
+                    NotificationView
                         .frame(width: geo.frame(in: .global).width)
                     TopicsView()
                         .frame(width: geo.frame(in: .global).width)
@@ -30,17 +30,7 @@ struct ConfigurationsView: View {
                 .offset(x: offsetX)
                 .highPriorityGesture(
                     DragGesture()
-                        .onEnded({ value in
-                            print(value.translation.width)
-                            if value.translation.width > 50 { // Minimum Drag
-
-                                app.updateTabs(swipeLeft: false)
-                            }
-                            if -value.translation.width > 50 {
-                                app.updateTabs(swipeLeft: true)
-                                print("Left")
-                            }
-                        })
+                        .onEnded(app.updateTabs)
                 )
             }
             
@@ -48,8 +38,6 @@ struct ConfigurationsView: View {
         .onChange(of: app.selectedHeaderTab, perform: updateLayout)
         .animation(.default)
         .foregroundColor(.systemWhite)
-        //        .background(Color.mainColor)
-        
         
     }
     
@@ -70,7 +58,6 @@ struct ConfigurationsView_Previews: PreviewProvider {
     static var previews: some View {
         ConfigurationsView()
             .environmentObject(AppManagerViewModel())
-        
     }
 }
 
@@ -120,11 +107,8 @@ extension ConfigurationsView {
             .background(Color.mainColor)
         }
     }
-//
-}
-
-struct ForyouView: View {
-    var body: some View {
+    
+    private var ForyouView: some View {
         VStack {
             Spacer()
             Group {
@@ -132,7 +116,7 @@ struct ForyouView: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(.gray)
                 Button(action: {
-
+                    app.selectedHeaderTab = .topics
                 }, label: {
                     Text("SELECT YOUR TOPICS")
                         .font(Font.caption.bold())
@@ -140,49 +124,53 @@ struct ForyouView: View {
                 })
             }
             .padding(4)
-
+            
             Spacer()
         }
     }
-}
 
-struct NotificationView: View {
-    var body: some View {
+    private var NotificationView: some View {
         VStack {
             Spacer()
             Text("NotificationView")
             Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-}
 
+    private struct TopicsView: View {
+        private let size = UIScreen.main.bounds.size
+        private let topics: [Topic] = []
 
-struct TopicsView: View {
-    private let size = UIScreen.main.bounds.size
-    private let topics: [Topic] = []
-
-    @State private var index: Int = 0
-    @State private var selectedTopics =  Set<Topic>()
-    @State private var allTopics: [Topics] = [Topics(values: [])]
-    var body: some View {
-        VStack {
-            Text("Subscribe to topics of interest to surface the stories you want to read")
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 50)
-            ScrollView {
-                VStack(spacing: 8)  {
-                    ForEach(allTopics) { allTopic in
-                        HStack(spacing: 12) {
-                            ForEach(allTopic.values) { topic in
-
-                                Text(topic.title)
-                                    .font(.system(size: 17))
-                                    .fontWeight(.light)
-                                    .foregroundColor(
-                                        selectedTopics.contains(topic) ?
-                                            Color.primary :
-                                            Color.systemWhite
-                                    )
+        @State private var index: Int = 0
+        @State private var selectedTopics =  Set<Topic>()
+        @State private var allTopics: [Topics] = [Topics(values: [])]
+        @State private var allTopicks: Set<Topics> = [Topics(values: [])]
+        var body: some View {
+            VStack {
+                Text("Subscribe to topics of interest to surface the stories you want to read")
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 50)
+                ScrollView {
+                    VStack(spacing: 8)  {
+                        ForEach(allTopics) { allTopic in
+                            HStack(spacing: 12) {
+                                ForEach(allTopic.values) { topic in
+                                    HStack(spacing: 1) {
+                                        if selectedTopics.contains(topic) {
+                                            Text(topic.emoji)
+                                        }
+                                        Text(topic.title)
+                                            
+                                            .foregroundColor(
+                                                selectedTopics.contains(topic) ?
+                                                    Color.primary :
+                                                    Color.systemWhite
+                                            )
+                                            
+                                    }
+                                    .font(.system(size: 17, weight: .light))
+                                    .minimumScaleFactor(0.5)
                                     .padding(.horizontal, 20)
                                     .padding(.vertical, 13)
                                     .border(Color.systemWhite, width: 1)
@@ -201,44 +189,49 @@ struct TopicsView: View {
                                             }
                                         }
                                     }
+                                }
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                    .onAppear(perform: energize)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .lineLimit(1)
-                .minimumScaleFactor(0.9)
-                .onAppear(perform: energize)
+            }
+            .padding(.top, 40)
+            .background(Color.mainColor)
+
+        }
+
+        private func energize() {
+            for topic in Topic.examples {
+                addTopic(topic)
             }
         }
-        .padding(.top, 40)
-        .background(Color.mainColor)
 
-    }
+        private func addTopic(_ topic: Topic) {
+            let itemSize = allTopics[index].values.map(topicsize).reduce(0, +)
+            
+            let topicSize = topicsize(topic)
+            let containerWidth = size.width - 20
+            if itemSize + topicSize <= containerWidth {
+                allTopics[index].values.append(topic)
+            } else {
+                index += 1
+                allTopics.append(.init(values: []))
+                allTopics[index].values.append(topic)
+            }
+        }
 
-    private func energize() {
-        for topic in Topic.examples {
-            addTopic(topic)
+        private func topicsize(_ topic: Topic) -> CGFloat {
+            let margins: CGFloat = 5
+            let emoji: CGFloat = 8
+            let paddings: CGFloat = 30
+            return topic.title.widthOfString(usingFont: .systemFont(ofSize: 18, weight: .bold)) + margins + paddings + emoji
         }
     }
 
-    private func addTopic(_ topic: Topic) {
-        let itemSize = allTopics[index].values.map(topicsize).reduce(0, +)
-        let topicSize = topicsize(topic)
-        let containerWidth = size.width - 20
-        if itemSize + topicSize <= containerWidth {
-            allTopics[index].values.append(topic)
-        } else {
-            index += 1
-            allTopics.append(.init(values: []))
-            allTopics[index].values.append(topic)
-        }
-    }
-
-    private func topicsize(_ topic: Topic) -> CGFloat {
-        let margins: CGFloat = 5
-        let paddings: CGFloat = 30
-        return topic.title.widthOfString(usingFont: .systemFont(ofSize: 18, weight: .light)) + margins + paddings
-    }
 }
+
