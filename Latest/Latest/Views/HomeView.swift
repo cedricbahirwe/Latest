@@ -16,7 +16,7 @@ struct News: Identifiable {
     var author: String
     var createdDate: Date = Date(timeIntervalSinceNow: -20)
     
-     static let itemFormatter: DateFormatter = {
+    static let itemFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .medium
@@ -32,43 +32,28 @@ struct News: Identifiable {
     
     static let defaultTopNews = News(category: "Security", title: "FBI launches operation to remove backdoors from hacked Hello Kigali servers", description: "", author: "Cédric Bahirwe")
     
+    static let manyNews: [News] = [
+        .defaultTopNews,
+        News(category: "Startups", title: "Grab a group discount and take your team to TC Sessions: Mobility 2021", description: "", author: "John Abouba"),
+        News(category: "Startups", title: "Grab a group discount and take your team to TC Sessions: Mobility 2021", description: "", author: "John Abouba"),
+        News(category: "Gaming", title: "Fortnite Epic completes made a $ 1B funding round", description: "", author: "Kevin Ha")
+    ]
+    
 }
 struct HomeView: View {
     @State private var topNews: News = .defaultTopNews
+    let allNews: [News] = Array(repeating: .defaultTopNews, count: 10)
     var body: some View {
         VStack(spacing: 0) {
             NavBarView()
-            ZStack(alignment: .bottomLeading) {
-                Image("2")
-                    .resizable()
-                    .scaledToFit()
-                    .background(Color.militaryGreen.opacity(0.3))
-                
-                VStack(alignment: .leading) {
-                    Text("Security")
-                        .textCase(.uppercase)
-                        .font(Font.caption.weight(.semibold))
-                        .foregroundColor(Color.systemWhite.opacity(0.8))
-                    Text("FBI launches operation to remove backdoors from hacked Hello Kigali servers")
-                        .font(Font.title.bold())
-                    HStack {
-                        Text("By Cédric Bahirwe")
-                        Color.systemWhite
-                            .frame(width: 5, height: 5)
-                        Text("\(topNews.timeAgoDisplay)")
-
-                    }
-                    .font(.caption2)
+            
+            ScrollView {
+                LazyVStack(spacing: 0) {
                     
+                    TopHeaderView(news: .defaultTopNews)
+                    ForEach(allNews, content: NewsRowView.init)
                 }
-                .foregroundColor(.systemWhite)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(10)
-                .background(Color.militaryGreen.opacity(0.9))
-                .padding(.trailing, 10)
             }
-            .frame(minHeight: 200)
-            Spacer()
         }
     }
 }
@@ -98,5 +83,42 @@ struct NavBarView: View {
         .padding()
         .frame(height: 48)
         .background(bgColor.ignoresSafeArea(.all))
+    }
+}
+
+struct TopHeaderView: View {
+    let news: News
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            Image("2")
+                .resizable()
+                .scaledToFit()
+            
+            VStack(alignment: .leading) {
+                Text("Security")
+                    .textCase(.uppercase)
+                    .font(Font.caption.weight(.semibold))
+                    .foregroundColor(Color.systemWhite.opacity(0.8))
+                Text("FBI launches operation to remove backdoors from hacked Hello Kigali servers")
+                    .font(Font.title.bold())
+                HStack(spacing: 5) {
+                    Text("By Cédric Bahirwe")
+                    Color.systemWhite
+                        .frame(width: 5, height: 5)
+                    Text(news.timeAgoDisplay)
+                    
+                }
+                .font(Font.caption2.weight(.light))
+                
+            }
+            .foregroundColor(.systemWhite)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(10)
+            .background(Color.militaryGreen.opacity(0.8))
+            .padding(.trailing, 10)
+        }
+        .background(Color.militaryGreen.opacity(0.3))
+        .frame(minHeight: 150, alignment: .bottom)
+        
     }
 }

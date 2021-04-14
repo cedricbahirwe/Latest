@@ -9,6 +9,6 @@ import SwiftUI
 
 extension Color {
     static let militaryGreen = Color("military-green")
-    
+    static let darkGreen = Color("darkGreen")
     static let systemWhite = Color(.systemBackground)
 }
