@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8213B075262705C000FE4D95 /* ConfigurationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8213B074262705C000FE4D95 /* ConfigurationsView.swift */; };
 		823382612626D58600ACF0ED /* LatestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823382602626D58600ACF0ED /* LatestApp.swift */; };
 		823382632626D58600ACF0ED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823382622626D58600ACF0ED /* ContentView.swift */; };
 		823382652626D58700ACF0ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 823382642626D58700ACF0ED /* Assets.xcassets */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8213B074262705C000FE4D95 /* ConfigurationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationsView.swift; sourceTree = "<group>"; };
 		8233825D2626D58600ACF0ED /* Latest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Latest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		823382602626D58600ACF0ED /* LatestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestApp.swift; sourceTree = "<group>"; };
 		823382622626D58600ACF0ED /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			children = (
 				8233829B2626DC6B00ACF0ED /* HomeView.swift */,
 				823382AC2626E83700ACF0ED /* NewsRowView.swift */,
+				8213B074262705C000FE4D95 /* ConfigurationsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8233826D2626D58700ACF0ED /* Latest.xcdatamodeld in Sources */,
+				8213B075262705C000FE4D95 /* ConfigurationsView.swift in Sources */,
 				823382A22626DE8200ACF0ED /* Colors.swift in Sources */,
 				8233826A2626D58700ACF0ED /* Persistence.swift in Sources */,
 				823382AD2626E83700ACF0ED /* NewsRowView.swift in Sources */,

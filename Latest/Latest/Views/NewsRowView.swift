@@ -20,8 +20,12 @@ struct NewsRowView: View {
 
                     Spacer()
                     Image(systemName: "bookmark")
+                        .hidden()
+                    Image("small-bookmark")
+                        .resizable()
+                        .frame(width: 16, height: 15)
                         .foregroundColor(.gray)
-//                        .imageScale(.small)
+                        
                 }
                 HStack(alignment: .top, spacing: 20) {
                     VStack(alignment: .leading) {

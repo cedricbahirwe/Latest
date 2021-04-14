@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct News: Identifiable {
-    var id = UUID()
+    let id = UUID()
     var category: String
     var title: String
     var description: String
@@ -32,7 +32,7 @@ struct News: Identifiable {
     
     static let defaultTopNews = News(category: "Security", title: "FBI launches operation to remove backdoors from hacked Hello Kigali servers", description: "", author: "Cédric Bahirwe")
     
-    static let manyNews: [News] = [
+    static let examples: [News] = [
         .defaultTopNews,
         News(category: "Startups", title: "Grab a group discount and take your team to TC Sessions: Mobility 2021", description: "", author: "John Abouba"),
         News(category: "Startups", title: "Grab a group discount and take your team to TC Sessions: Mobility 2021", description: "", author: "John Abouba"),
@@ -42,7 +42,7 @@ struct News: Identifiable {
 }
 struct HomeView: View {
     @State private var topNews: News = .defaultTopNews
-    let allNews: [News] = Array(repeating: .defaultTopNews, count: 10)
+    let allNews: [News] = News.examples
     var body: some View {
         VStack(spacing: 0) {
             NavBarView()
