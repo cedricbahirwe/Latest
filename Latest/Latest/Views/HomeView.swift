@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var topNews: News = .defaultTopNews
-    let allNews: [News] = News.examples
+    let topNews: News = .defaultTopNews
+    @EnvironmentObject var data: AppManagerViewModel
     var body: some View {
         VStack(spacing: 0) {
             NavBarView()
@@ -17,8 +17,7 @@ struct HomeView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     
-                    TopHeaderView(news: .defaultTopNews)
-                    ForEach(allNews, content: NewsRowView.init)
+                    ForEach(data.allNews, content: NewsRowView.init)
                 }
             }
         }
@@ -28,10 +27,13 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+            .environmentObject(AppManagerViewModel())
     }
 }
 
 struct NavBarView: View {
+    
+    @EnvironmentObject var data: AppManagerViewModel
     let bgColor: Color = Color.mainColor
     private let title: String = "Latest"
     
@@ -39,12 +41,18 @@ struct NavBarView: View {
         HStack {
             Image(systemName: "person")
                 .imageScale(.large)
+                .onTapGesture {
+                    data.showProfileView.toggle()
+                }
             Spacer()
             Text("Latest")
                 .font(Font.title2.weight(.bold))
             Spacer()
             Image(systemName: "bookmark.circle")
                 .imageScale(.large)
+                .onTapGesture {
+                    data.showBookmarkView.toggle()
+                }
         }
         .foregroundColor(Color(.systemBackground))
         .padding()
@@ -61,7 +69,7 @@ struct TopHeaderView: View {
                 .resizable()
                 .scaledToFit()
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Security")
                     .textCase(.uppercase)
                     .font(Font.caption.weight(.semibold))
@@ -80,7 +88,7 @@ struct TopHeaderView: View {
             }
             .foregroundColor(.systemWhite)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(10)
+            .padding()
             .background(Color.mainColor.opacity(0.8))
             .padding(.trailing, 10)
         }
