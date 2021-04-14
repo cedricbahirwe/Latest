@@ -8,7 +8,9 @@
 import SwiftUI
 
 extension Color {
-    static let militaryGreen = Color("military-green")
+    static let mainColor = Color("mainColor")
     static let darkGreen = Color("darkGreen")
+    static let mainRed = Color("mainRed")
+    static let blackDark = Color("blackDark")
     static let systemWhite = Color(.systemBackground)
 }

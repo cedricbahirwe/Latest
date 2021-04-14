@@ -7,39 +7,6 @@
 
 import SwiftUI
 
-
-struct News: Identifiable {
-    let id = UUID()
-    var category: String
-    var title: String
-    var description: String
-    var author: String
-    var createdDate: Date = Date(timeIntervalSinceNow: -20)
-    
-    static let itemFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .medium
-        return formatter
-    }()
-    
-    var timeAgoDisplay: String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        
-        return formatter.localizedString(for: createdDate, relativeTo: Date())
-    }
-    
-    static let defaultTopNews = News(category: "Security", title: "FBI launches operation to remove backdoors from hacked Hello Kigali servers", description: "", author: "Cédric Bahirwe")
-    
-    static let examples: [News] = [
-        .defaultTopNews,
-        News(category: "Startups", title: "Grab a group discount and take your team to TC Sessions: Mobility 2021", description: "", author: "John Abouba"),
-        News(category: "Startups", title: "Grab a group discount and take your team to TC Sessions: Mobility 2021", description: "", author: "John Abouba"),
-        News(category: "Gaming", title: "Fortnite Epic completes made a $ 1B funding round", description: "", author: "Kevin Ha")
-    ]
-    
-}
 struct HomeView: View {
     @State private var topNews: News = .defaultTopNews
     let allNews: [News] = News.examples
@@ -65,7 +32,7 @@ struct HomeView_Previews: PreviewProvider {
 }
 
 struct NavBarView: View {
-    let bgColor: Color = Color.militaryGreen
+    let bgColor: Color = Color.mainColor
     private let title: String = "Latest"
     
     var body: some View {
@@ -114,10 +81,10 @@ struct TopHeaderView: View {
             .foregroundColor(.systemWhite)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(10)
-            .background(Color.militaryGreen.opacity(0.8))
+            .background(Color.mainColor.opacity(0.8))
             .padding(.trailing, 10)
         }
-        .background(Color.militaryGreen.opacity(0.3))
+        .background(Color.mainColor.opacity(0.3))
         .frame(minHeight: 150, alignment: .bottom)
         
     }
