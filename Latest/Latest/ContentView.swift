@@ -8,10 +8,7 @@
 import SwiftUI
 import CoreData
 
-public class SingleNews: NSManagedObject, Identifiable {
-    
-
-}
+public class SingleNews: NSManagedObject, Identifiable {}
 
 extension SingleNews {
 
