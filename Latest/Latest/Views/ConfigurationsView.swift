@@ -25,7 +25,6 @@ struct ConfigurationsView: View {
                         .frame(width: geo.frame(in: .global).width)
                     TopicsView()
                         .frame(width: geo.frame(in: .global).width)
-
                 }
                 .offset(x: offsetX)
                 .highPriorityGesture(
@@ -33,11 +32,10 @@ struct ConfigurationsView: View {
                         .onEnded(app.updateTabs)
                 )
             }
+            .animation(.default)
             
         }
         .onChange(of: app.selectedHeaderTab, perform: updateLayout)
-        .animation(.default)
-        .foregroundColor(.systemWhite)
         
     }
     
@@ -68,11 +66,11 @@ extension ConfigurationsView {
         case topics = "Topics"
     }
     private struct TabBarView: View {
-
+        
         @Binding var selectedTab: ConfigTabs
-
+        
         @Namespace private var animation
-
+        
         var body: some View {
             HStack(spacing: 20) {
                 ForEach(ConfigTabs.allCases, id: \.self) { tab in
@@ -90,7 +88,7 @@ extension ConfigurationsView {
                                     Color.clear
                                         .frame(height: 5)
                                 }
-
+                                
                             }, alignment: .bottom
                         )
                         .onTapGesture {
@@ -128,29 +126,30 @@ extension ConfigurationsView {
             Spacer()
         }
     }
-
+    
     private var NotificationView: some View {
         VStack {
             Spacer()
             Text("NotificationView")
+            
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-
+    
     private struct TopicsView: View {
         private let size = UIScreen.main.bounds.size
         private let topics: [Topic] = []
-
+        
         @State private var index: Int = 0
         @State private var selectedTopics =  Set<Topic>()
-        @State private var allTopics: [Topics] = [Topics(values: [])]
-        @State private var allTopicks: Set<Topics> = [Topics(values: [])]
+        @State private var allTopics: [Topics] = TopicsModeler().allTopics
         var body: some View {
             VStack {
                 Text("Subscribe to topics of interest to surface the stories you want to read")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 50)
+                    .foregroundColor(.systemWhite)
                 ScrollView {
                     VStack(spacing: 8)  {
                         ForEach(allTopics) { allTopic in
@@ -167,7 +166,7 @@ extension ConfigurationsView {
                                                     Color.primary :
                                                     Color.systemWhite
                                             )
-                                            
+                                        
                                     }
                                     .font(.system(size: 17, weight: .light))
                                     .minimumScaleFactor(0.5)
@@ -197,41 +196,11 @@ extension ConfigurationsView {
                     .padding()
                     .lineLimit(1)
                     .minimumScaleFactor(0.9)
-                    .onAppear(perform: energize)
                 }
             }
-            .padding(.top, 40)
+            .padding(.top, 25)
             .background(Color.mainColor)
-
-        }
-
-        private func energize() {
-            for topic in Topic.examples {
-                addTopic(topic)
-            }
-        }
-
-        private func addTopic(_ topic: Topic) {
-            let itemSize = allTopics[index].values.map(topicsize).reduce(0, +)
-            
-            let topicSize = topicsize(topic)
-            let containerWidth = size.width - 20
-            if itemSize + topicSize <= containerWidth {
-                allTopics[index].values.append(topic)
-            } else {
-                index += 1
-                allTopics.append(.init(values: []))
-                allTopics[index].values.append(topic)
-            }
-        }
-
-        private func topicsize(_ topic: Topic) -> CGFloat {
-            let margins: CGFloat = 5
-            let emoji: CGFloat = 8
-            let paddings: CGFloat = 30
-            return topic.title.widthOfString(usingFont: .systemFont(ofSize: 18, weight: .bold)) + margins + paddings + emoji
         }
     }
-
 }
 
