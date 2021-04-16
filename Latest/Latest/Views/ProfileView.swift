@@ -8,24 +8,10 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Spacer()
-                Image(systemName: "multiply")
-                    .resizable()
-                    .frame(width: 20, height: 20)
-                    .foregroundColor(.systemWhite)
-                    .onTapGesture {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-            }
-            .padding(.horizontal)
-            .frame(height: 48)
-            .background(Color.mainColor.ignoresSafeArea())
-            
-            
+            SheetHeaderView()
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     Button(action: {
@@ -83,7 +69,7 @@ struct ProfileView: View {
             .frame(maxWidth:.infinity, alignment: .topLeading)
             .background(
                 LinearGradient(gradient: Gradient(colors: [Color.mainColor, Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing)
-
+                
             )
             
         }
@@ -113,5 +99,5 @@ extension ProfileView {
             .background(Color.primary.opacity(0.3))
         }
     }
-
+    
 }

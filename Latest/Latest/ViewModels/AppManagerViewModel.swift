@@ -20,12 +20,28 @@ class AppManagerViewModel: ObservableObject {
         }
     }
     @Published public private(set) var allNews: [News] = News.examples
+    private var bookmarkedNews: Set<News>  {
+        Set(allNews.filter(\.isBookmarked))
+    }
     
     public let topics: [Topic] = Topic.examples
     
     
 }
 
+// MARK: - Logic Methods
+extension AppManagerViewModel {
+    
+    public func updateBookmarked(_ news: News) {
+        if let index = allNews.firstIndex(where: { $0.id == news.id }) {
+            allNews[index].isBookmarked.toggle()
+        }
+    }
+    
+}
+
+
+// MARK: - Layout Methods
 extension AppManagerViewModel {
     public func updateTabs(with swipeValue: DragGesture.Value) {
         

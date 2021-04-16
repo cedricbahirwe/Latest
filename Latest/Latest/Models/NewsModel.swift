@@ -7,13 +7,14 @@
 
 import Foundation
 
-struct News: Identifiable {
+struct News: Identifiable, Hashable {
     let id = UUID()
     var category: String
     var title: String
     var description: String
     var author: String
     var createdDate: Date = Date(timeIntervalSinceNow: -20)
+    var isBookmarked: Bool = false
     
     static let itemFormatter: DateFormatter = {
         let formatter = DateFormatter()
