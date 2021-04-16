@@ -23,9 +23,14 @@ struct ContentView: View {
                 }.tag(2)
         }
         .accentColor(.mainColor)
-        .sheet(isPresented: $data.showProfileView) {
-            ProfileView()
+        .sheet(isPresented: data.showBookmarkView ? $data.showBookmarkView : $data.showProfileView) {
+            if data.showBookmarkView {
+                BookmarkedView()
+            } else {
+                ProfileView()
+            }
         }
+        
     }
     
 }
