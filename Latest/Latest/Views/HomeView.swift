@@ -19,7 +19,7 @@ struct HomeView: View {
                     ForEach(data.allArticles, content: NewsRowView.init)
                 }
             }
-//            .redacted(reason: data.allArticles.isEmpty ? .placeholder : [])
+            .redacted(reason: data.allArticles.isEmpty ? .placeholder : [])
         }
         .onAppear(perform: data.getNewsAPi)
     }

@@ -45,7 +45,6 @@ struct NewsRowView: View {
                     
                     if let imageurl = news.urlToImage {
                         RemoteImage(url: imageurl)
-                            //                                    .scaledToFill()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 100, height: 60)
                             .clipped()
@@ -57,11 +56,6 @@ struct NewsRowView: View {
                             .background(Color.gray)
                         
                     }
-                    //                    Image("3")
-                    //                        .resizable()
-                    //                        .scaledToFill()
-                    //                        .frame(width: 100, height: 60)
-                    //                        .background(Color.gray)
                 }
             }
             .padding(10)
