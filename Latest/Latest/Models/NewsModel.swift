@@ -63,6 +63,19 @@ struct NewsApiArticle: Decodable, Identifiable {
         UUID(uuidString: title + content) ?? UUID()
     }
     
+    var timesAgo: String {
+        publishedDate().timeAgoDisplay
+    }
+    
+    
+    private func publishedDate() -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        if let date =  dateFormatter.date(from: publishedAt) {
+            return date
+        }
+        return Date()
+    }
     static var defaultTopNews = NewsApiArticle(source: .default, author: nil, title: "", description: "", url: "", urlToImage: nil, publishedAt: "", content: "")
 }
 
@@ -71,4 +84,14 @@ struct NewsApiSource: Decodable {
     let name: String?
     
     static let `default` = NewsApiSource(source: nil, name: nil)
+}
+
+
+extension Date {
+    var timeAgoDisplay: String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        
+        return formatter.localizedString(for: self, relativeTo: Date())
+    }
 }

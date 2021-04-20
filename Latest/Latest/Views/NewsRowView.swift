@@ -33,9 +33,11 @@ struct NewsRowView: View {
                             .font(Font.body.weight(.semibold))
                         HStack(spacing: 5) {
                             Text("By \(news.author ?? "Unknown")")
+                                .lineLimit(1)
+                            
                             Color.gray
                                 .frame(width: 3, height: 3)
-                            Text("\(news.publishedAt)")
+                            Text("\(news.timesAgo)")
                             
                         }
                         .font(Font.caption2.weight(.light))
@@ -68,6 +70,6 @@ struct NewsRowView_Previews: PreviewProvider {
     static var previews: some View {
         NewsRowView(news: .defaultTopNews)
             .previewLayout(.fixed(width: 400, height: 200))
-            .preferredColorScheme(.dark)
+//            .preferredColorScheme(.dark).l
     }
 }
