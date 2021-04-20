@@ -20,12 +20,36 @@ class AppManagerViewModel: ObservableObject {
         }
     }
     @Published public private(set) var allNews: [News] = News.examples
+    @Published public private(set) var allArticles: [NewsApiArticle] = []
+    public var placeholders: [NewsApiArticle] = Array(repeating: NewsApiArticle(
+                                                        source: NewsApiSource(
+                                                            source: nil,
+                                                            name: nil),
+                                                        author: nil,
+                                                        urlToImage: nil),
+                                                      count: 10)
     private var bookmarkedNews: Set<News>  {
         Set(allNews.filter(\.isBookmarked))
     }
     
     public let topics: [Topic] = Topic.examples
     
+    
+    public func getNewsAPi() {
+        GetRequest<NewsApiModel>(baseUrl: "https://newsapi.org/v2/everything?q=Apple&from=2021-04-20&sortBy=popularity&apiKey=ca03cd8413224a368bf14ebc23303c74", .other)
+            .get(completion: { [weak self] result in
+                switch result {
+                case .success(let news):
+                    DispatchQueue.main.async {
+                        print("loaded")
+                        self?.allArticles = news.articles
+                    }
+                case .failure(let error):
+                    
+                    print(error.localizedDescription)
+                }
+            })
+    }
     
 }
 
@@ -66,4 +90,8 @@ extension AppManagerViewModel {
         }
         
     }
+    
+    
+    
+    
 }

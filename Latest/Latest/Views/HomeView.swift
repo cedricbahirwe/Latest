@@ -13,13 +13,15 @@ struct HomeView: View {
         VStack(spacing: 0) {
             NavBarView()
             ScrollView {
-                LazyVStack(spacing: 0) {
+                VStack(spacing: 0) {
                     TopHeaderView(news: .defaultTopNews)
 
-                    ForEach(data.allNews, content: NewsRowView.init)
+                    ForEach(data.allArticles, content: NewsRowView.init)
                 }
             }
+//            .redacted(reason: data.allArticles.isEmpty ? .placeholder : [])
         }
+        .onAppear(perform: data.getNewsAPi)
     }
 }
 

@@ -40,3 +40,35 @@ struct News: Identifiable, Hashable {
     ]
     
 }
+
+
+struct NewsApiModel: Decodable {
+    var status: String
+    var totalResults: Int
+    var articles: [NewsApiArticle]
+}
+
+struct NewsApiArticle: Decodable, Identifiable {
+    let source: NewsApiSource
+    let author: String?
+    var title: String = ""
+    var description: String = ""
+    var url: String = ""
+    var urlToImage: String?
+    var publishedAt: String = ""
+    var content: String = ""
+    
+    
+    var id: UUID {
+        UUID(uuidString: title + content) ?? UUID()
+    }
+    
+    static var defaultTopNews = NewsApiArticle(source: .default, author: nil, title: "", description: "", url: "", urlToImage: nil, publishedAt: "", content: "")
+}
+
+struct NewsApiSource: Decodable {
+    let source: String?
+    let name: String?
+    
+    static let `default` = NewsApiSource(source: nil, name: nil)
+}

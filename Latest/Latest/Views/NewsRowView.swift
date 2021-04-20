@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct NewsRowView: View {
-    let news: News
+    let news: NewsApiArticle
     var body: some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading) {
                 HStack {
-                    Text(news.category)
+                    Text("Security")
                         .foregroundColor(.green)
                         .textCase(.uppercase)
                         .font(Font.caption.weight(.semibold))
-
+                    
                     Spacer()
                     Image(systemName: "bookmark")
                         .hidden()
@@ -25,28 +25,43 @@ struct NewsRowView: View {
                         .resizable()
                         .frame(width: 16, height: 15)
                         .foregroundColor(.gray)
-                        
+                    
                 }
                 HStack(alignment: .top, spacing: 20) {
                     VStack(alignment: .leading) {
                         Text(news.title)
                             .font(Font.body.weight(.semibold))
                         HStack(spacing: 5) {
-                            Text("By \(news.author)")
+                            Text("By \(news.author ?? "Unknown")")
                             Color.gray
                                 .frame(width: 3, height: 3)
-                            Text("\(news.timeAgoDisplay)")
-
+                            Text("\(news.publishedAt)")
+                            
                         }
                         .font(Font.caption2.weight(.light))
                         .foregroundColor(.gray)
                     }
                     Spacer()
-                    Image("3")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 100, height: 60)
-                        .background(Color.gray)
+                    
+                    if let imageurl = news.urlToImage {
+                        RemoteImage(url: imageurl)
+                            //                                    .scaledToFill()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 60)
+                            .clipped()
+                            .background(Color.gray)
+                        
+                    } else {
+                        Color.gray
+                            .frame(width: 100, height: 60)
+                            .background(Color.gray)
+                        
+                    }
+                    //                    Image("3")
+                    //                        .resizable()
+                    //                        .scaledToFill()
+                    //                        .frame(width: 100, height: 60)
+                    //                        .background(Color.gray)
                 }
             }
             .padding(10)
