@@ -58,7 +58,7 @@ extension HomeView {
                     .font(Font.caption2.weight(.light))
                     
                 }
-                .foregroundColor(.systemWhite)
+                .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .background(Color.mainColor.opacity(0.8))

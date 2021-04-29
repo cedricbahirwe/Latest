@@ -17,6 +17,7 @@ struct ConfigurationsView: View {
             NavBarView()
             TabBarView(selectedTab: $app.selectedHeaderTab)
             
+            
             GeometryReader { geo in
                 HStack(spacing: 0) {
                     ForyouView
@@ -81,7 +82,7 @@ extension ConfigurationsView {
                         .overlay(
                             ZStack {
                                 if selectedTab == tab {
-                                    Color.systemWhite
+                                    Color.white
                                         .frame(height: 5)
                                         .matchedGeometryEffect(id: "Tab", in: animation)
                                 } else {
@@ -98,7 +99,7 @@ extension ConfigurationsView {
                         }
                 }
             }
-            .foregroundColor(.systemWhite)
+            .foregroundColor(.white)
             .font(.system(size: 16, weight: .light))
             .frame(maxWidth: .infinity)
             .padding(.bottom, 8)
@@ -149,7 +150,7 @@ extension ConfigurationsView {
                 Text("Subscribe to topics of interest to surface the stories you want to read")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 50)
-                    .foregroundColor(.systemWhite)
+                    .foregroundColor(.white)
                 ScrollView {
                     VStack(spacing: 8)  {
                         ForEach(allTopics) { allTopic in
@@ -163,8 +164,8 @@ extension ConfigurationsView {
                                             
                                             .foregroundColor(
                                                 selectedTopics.contains(topic) ?
-                                                    Color.primary :
-                                                    Color.systemWhite
+                                                    Color.white :
+                                                    Color.white
                                             )
                                         
                                     }
@@ -200,6 +201,7 @@ extension ConfigurationsView {
             }
             .padding(.top, 25)
             .background(Color.mainColor)
+
         }
     }
 }

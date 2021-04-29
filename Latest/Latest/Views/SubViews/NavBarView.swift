@@ -29,7 +29,7 @@ struct NavBarView: View {
                     data.showBookmarkView.toggle()
                 }
         }
-        .foregroundColor(Color(.systemBackground))
+        .foregroundColor(.white)
         .padding()
         .frame(height: 48)
         .background(bgColor.ignoresSafeArea(.all))
