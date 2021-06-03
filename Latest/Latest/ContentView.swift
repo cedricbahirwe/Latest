@@ -26,6 +26,7 @@ struct ContentView: View {
         .sheet(isPresented: data.showBookmarkView ? $data.showBookmarkView : $data.showProfileView) {
             if data.showBookmarkView {
                 BookmarkedView()
+                    .environmentObject(data)
             } else {
                 ProfileView()
             }

@@ -19,7 +19,6 @@ class AppManagerViewModel: ObservableObject {
             // Store locally
         }
     }
-    @Published public private(set) var allNews: [News] = News.examples
     @Published public private(set) var allArticles: [NewsApiArticle] = []
     public var placeholders: [NewsApiArticle] = Array(repeating: NewsApiArticle(
                                                         source: NewsApiSource(
@@ -28,21 +27,23 @@ class AppManagerViewModel: ObservableObject {
                                                         author: nil,
                                                         urlToImage: nil),
                                                       count: 10)
-    private var bookmarkedNews: Set<News>  {
-        Set(allNews.filter(\.isBookmarked))
-    }
+    @Published public private(set) var bookmarkedNews: [NewsApiArticle] = []
+    
+    
     
     public let topics: [Topic] = Topic.examples
     
     
     public func getNewsAPi() {
-        GetRequest<NewsApiModel>(baseUrl: "https://newsapi.org/v2/everything?q=Apple&from=2021-04-20&sortBy=popularity&apiKey=ca03cd8413224a368bf14ebc23303c74", .other)
+        GetRequest<NewsApiModel>(baseUrl: "https://newsapi.org/v2/everything?q=Apple&from=2021-05-20&sortBy=popularity&apiKey=ca03cd8413224a368bf14ebc23303c74", .other)
             .get(completion: { [weak self] result in
                 switch result {
                 case .success(let news):
                     DispatchQueue.main.async {
                         print("loaded")
-                        self?.allArticles = news.articles
+                        withAnimation {
+                            self?.allArticles = news.articles
+                        }
                     }
                 case .failure(let error):
                     
@@ -56,12 +57,20 @@ class AppManagerViewModel: ObservableObject {
 // MARK: - Logic Methods
 extension AppManagerViewModel {
     
-    public func updateBookmarked(_ news: News) {
-        if let index = allNews.firstIndex(where: { $0.id == news.id }) {
-            allNews[index].isBookmarked.toggle()
+    public func updateBookmarks(_ news: NewsApiArticle) {
+        if let index = bookmarkedNews.firstIndex(where: { $0.id == news.id}) {
+            bookmarkedNews.remove(at: index)
+        } else {
+            bookmarkedNews.append(news)
         }
     }
     
+    public func isBookMarked(_ news: NewsApiArticle) -> Bool {
+        if let _ = bookmarkedNews.firstIndex(where: { $0.id == news.id}) {
+            return true
+        }
+        return false
+    }
 }
 
 
@@ -90,8 +99,5 @@ extension AppManagerViewModel {
         }
         
     }
-    
-    
-    
-    
+
 }

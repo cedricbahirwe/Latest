@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NewsRowView: View {
+    @EnvironmentObject private var data: AppManagerViewModel
     let news: NewsApiArticle
     var body: some View {
         VStack(spacing: 0) {
@@ -19,12 +20,14 @@ struct NewsRowView: View {
                         .font(Font.caption.weight(.semibold))
                     
                     Spacer()
-                    Image(systemName: "bookmark")
-                        .hidden()
-                    Image("small-bookmark")
+                    Image(systemName: data.isBookMarked(news) ? "bookmark.fill" : "bookmark")
                         .resizable()
-                        .frame(width: 16, height: 15)
-                        .foregroundColor(.gray)
+                        .scaledToFit()
+                        .frame(width: 18, height: 18, alignment: .trailing)
+                        .foregroundColor(data.isBookMarked(news) ? .mainColor : .gray)
+                        .onTapGesture {
+                            data.updateBookmarks(news)
+                        }
                     
                 }
                 HStack(alignment: .top, spacing: 20) {
@@ -70,6 +73,7 @@ struct NewsRowView_Previews: PreviewProvider {
     static var previews: some View {
         NewsRowView(news: .defaultTopNews)
             .previewLayout(.fixed(width: 400, height: 200))
+            .environmentObject(AppManagerViewModel())
 //            .preferredColorScheme(.dark).l
     }
 }

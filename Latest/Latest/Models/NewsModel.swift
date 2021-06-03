@@ -59,8 +59,8 @@ struct NewsApiArticle: Decodable, Identifiable {
     var content: String = ""
     
     
-    var id: UUID {
-        UUID(uuidString: title + content) ?? UUID()
+    var id: String {
+        title + url
     }
     
     var timesAgo: String {
