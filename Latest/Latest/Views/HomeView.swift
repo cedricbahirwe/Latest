@@ -46,7 +46,7 @@ extension HomeView {
                         .textCase(.uppercase)
                         .font(Font.caption.weight(.semibold))
                         .foregroundColor(Color.systemWhite.opacity(0.8))
-                    Text("FBI launches operation to remove backdoors from hacked Hello Kigali servers")
+                    Text("Latest mobile trends show how people use their devices all over the world.")
                         .font(Font.title.bold())
                     HStack(spacing: 5) {
                         Text("By Cédric Bahirwe")
