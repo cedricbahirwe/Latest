@@ -1,5 +1,5 @@
 # Latest
-Well, the intent is a news UI, inspired from hackernoon iOS mobile app which is no longer supported
+Well, the intent is a news UI, inspired from TechCruch iOS mobile app which is no longer supported
 
 Home View                 |  Settings View
 :-------------------------:|:-------------------------:
