@@ -19,6 +19,7 @@
 		8233829C2626DC6B00ACF0ED /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8233829B2626DC6B00ACF0ED /* HomeView.swift */; };
 		823382A22626DE8200ACF0ED /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823382A12626DE8200ACF0ED /* Colors.swift */; };
 		823382AD2626E83700ACF0ED /* NewsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823382AC2626E83700ACF0ED /* NewsRowView.swift */; };
+		826994E826B499AE005886FD /* TestinVi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826994E726B499AE005886FD /* TestinVi.swift */; };
 		8286B5EB2627322100FAD7C2 /* TopicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8286B5EA2627322100FAD7C2 /* TopicModel.swift */; };
 		8286B5F02627322A00FAD7C2 /* NewsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8286B5EF2627322A00FAD7C2 /* NewsModel.swift */; };
 		828E3CAF262ED5DF006C8892 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E3CAE262ED5DF006C8892 /* RemoteImage.swift */; };
@@ -68,6 +69,7 @@
 		8233829B2626DC6B00ACF0ED /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		823382A12626DE8200ACF0ED /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		823382AC2626E83700ACF0ED /* NewsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsRowView.swift; sourceTree = "<group>"; };
+		826994E726B499AE005886FD /* TestinVi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestinVi.swift; sourceTree = "<group>"; };
 		8286B5EA2627322100FAD7C2 /* TopicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicModel.swift; sourceTree = "<group>"; };
 		8286B5EF2627322A00FAD7C2 /* NewsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsModel.swift; sourceTree = "<group>"; };
 		828E3CAE262ED5DF006C8892 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
@@ -131,10 +133,11 @@
 			children = (
 				823382602626D58600ACF0ED /* LatestApp.swift */,
 				823382622626D58600ACF0ED /* ContentView.swift */,
+				826994E726B499AE005886FD /* TestinVi.swift */,
 				8233829A2626DC6400ACF0ED /* Views */,
 				8286B5E92627321400FAD7C2 /* Models */,
 				82FB4EA4262787680000E8DD /* ViewModels */,
-				82DCBBAD262ECB5500C1A03C /* Network */,
+				82DCBBAD262ECB5500C1A03C /* Networking */,
 				823382A02626DE7300ACF0ED /* Helpers */,
 				823382642626D58700ACF0ED /* Assets.xcassets */,
 				823382692626D58700ACF0ED /* Persistence.swift */,
@@ -175,7 +178,6 @@
 			isa = PBXGroup;
 			children = (
 				8233829B2626DC6B00ACF0ED /* HomeView.swift */,
-				823382AC2626E83700ACF0ED /* NewsRowView.swift */,
 				8213B074262705C000FE4D95 /* ConfigurationsView.swift */,
 				82A993C7262822B900562010 /* BookmarkedView.swift */,
 				82FB4E9F262780F60000E8DD /* ProfileView.swift */,
@@ -207,18 +209,19 @@
 		82D07E6A262828A9006E8029 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
+				823382AC2626E83700ACF0ED /* NewsRowView.swift */,
 				82D07E6B262828B3006E8029 /* SheetHeaderView.swift */,
 				82D07E7326282A82006E8029 /* NavBarView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
 		};
-		82DCBBAD262ECB5500C1A03C /* Network */ = {
+		82DCBBAD262ECB5500C1A03C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
 				82DCBBAE262ECB5E00C1A03C /* GetRequest.swift */,
 			);
-			path = Network;
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		82FB4EA4262787680000E8DD /* ViewModels */ = {
@@ -365,6 +368,7 @@
 				823382A22626DE8200ACF0ED /* Colors.swift in Sources */,
 				828E3CAF262ED5DF006C8892 /* RemoteImage.swift in Sources */,
 				8233826A2626D58700ACF0ED /* Persistence.swift in Sources */,
+				826994E826B499AE005886FD /* TestinVi.swift in Sources */,
 				823382AD2626E83700ACF0ED /* NewsRowView.swift in Sources */,
 				82FB4EA6262787910000E8DD /* AppManagerViewModel.swift in Sources */,
 				8286B5EB2627322100FAD7C2 /* TopicModel.swift in Sources */,
