@@ -111,26 +111,16 @@ extension ConfigurationsView {
         VStack {
             Spacer()
             Group {
-                Color.mainColor.saturation(2).mask(
-                Image("basketball")
-//                    .renderingMode(.template)
-                    .resizable()
-                    
-                    .padding(30)
-                    .frame(width: 250, height: 250)
-                    .border(Color.black)
-                    .scaleEffect(1.2)
-                )
-//                Text("Find stories relevant to the\ntopics of interest")
-//                    .multilineTextAlignment(.center)
-//                    .foregroundColor(.gray)
-//                Button(action: {
-//                    app.selectedHeaderTab = .topics
-//                }, label: {
-//                    Text("SELECT YOUR TOPICS")
-//                        .font(Font.caption.bold())
-//                        .foregroundColor(.mainColor)
-//                })
+                Text("Find stories relevant to the\ntopics of interest")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.gray)
+                Button(action: {
+                    app.selectedHeaderTab = .topics
+                }, label: {
+                    Text("SELECT YOUR TOPICS")
+                        .font(Font.caption.bold())
+                        .foregroundColor(.mainColor)
+                })
             }
             .padding(4)
             

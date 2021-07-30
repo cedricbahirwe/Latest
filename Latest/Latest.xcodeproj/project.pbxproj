@@ -19,7 +19,6 @@
 		8233829C2626DC6B00ACF0ED /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8233829B2626DC6B00ACF0ED /* HomeView.swift */; };
 		823382A22626DE8200ACF0ED /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823382A12626DE8200ACF0ED /* Colors.swift */; };
 		823382AD2626E83700ACF0ED /* NewsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823382AC2626E83700ACF0ED /* NewsRowView.swift */; };
-		826994E826B499AE005886FD /* TestinVi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826994E726B499AE005886FD /* TestinVi.swift */; };
 		8286B5EB2627322100FAD7C2 /* TopicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8286B5EA2627322100FAD7C2 /* TopicModel.swift */; };
 		8286B5F02627322A00FAD7C2 /* NewsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8286B5EF2627322A00FAD7C2 /* NewsModel.swift */; };
 		828E3CAF262ED5DF006C8892 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E3CAE262ED5DF006C8892 /* RemoteImage.swift */; };
@@ -69,7 +68,6 @@
 		8233829B2626DC6B00ACF0ED /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		823382A12626DE8200ACF0ED /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		823382AC2626E83700ACF0ED /* NewsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsRowView.swift; sourceTree = "<group>"; };
-		826994E726B499AE005886FD /* TestinVi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestinVi.swift; sourceTree = "<group>"; };
 		8286B5EA2627322100FAD7C2 /* TopicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicModel.swift; sourceTree = "<group>"; };
 		8286B5EF2627322A00FAD7C2 /* NewsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsModel.swift; sourceTree = "<group>"; };
 		828E3CAE262ED5DF006C8892 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 			children = (
 				823382602626D58600ACF0ED /* LatestApp.swift */,
 				823382622626D58600ACF0ED /* ContentView.swift */,
-				826994E726B499AE005886FD /* TestinVi.swift */,
 				8233829A2626DC6400ACF0ED /* Views */,
 				8286B5E92627321400FAD7C2 /* Models */,
 				82FB4EA4262787680000E8DD /* ViewModels */,
@@ -368,7 +365,6 @@
 				823382A22626DE8200ACF0ED /* Colors.swift in Sources */,
 				828E3CAF262ED5DF006C8892 /* RemoteImage.swift in Sources */,
 				8233826A2626D58700ACF0ED /* Persistence.swift in Sources */,
-				826994E826B499AE005886FD /* TestinVi.swift in Sources */,
 				823382AD2626E83700ACF0ED /* NewsRowView.swift in Sources */,
 				82FB4EA6262787910000E8DD /* AppManagerViewModel.swift in Sources */,
 				8286B5EB2627322100FAD7C2 /* TopicModel.swift in Sources */,

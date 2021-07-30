@@ -9,6 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var data: AppManagerViewModel
+    @State private var showToast = false {
+        didSet  {
+            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                showToast = false
+            }
+        }
+    }
     var body: some View {
         ZStack(alignment: .top) {
             
@@ -19,6 +26,11 @@ struct ContentView: View {
                         
                     }.tag(1)
                 ConfigurationsView()
+                    .onAppear() {
+                        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+                            showToast.toggle()
+                        }
+                    }
                     .tabItem {
                         Image(systemName: "star.square.fill")
                         
@@ -35,23 +47,36 @@ struct ContentView: View {
             }
             
             
-            HStack {
+            VStack(alignment: .leading) {
                 HStack {
+                    Image("icon")
+                        .resizable()
+                        .foregroundColor(Color.mainColor)
+                        .saturation(2)
+                        .frame(width: 18, height: 18)
                     Text("Latest")
+                        .fontWeight(.semibold)
                     Spacer()
                     Text("Now")
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }
-                Text("")
+                Text("A simple title for the notification")
+                    .fontWeight(.semibold)
+                Text("This is some somple comments about the notifications")
+                    .font(.callout)
+                    .lineLimit(1)
             }
             .padding(10)
-            .frame(height: 80, alignment: .topLeading)
+            .frame(height: 90, alignment: .topLeading)
             .frame(maxWidth: .infinity)
             .background(Color(.secondarySystemGroupedBackground).ignoresSafeArea())
             .cornerRadius(12)
             .padding(.horizontal, 10)
-            .preferredColorScheme(.dark)
+            .opacity(showToast ? 1 : 0)
+            .offset(y: showToast ? 0 : -100-(UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0))
+            .transition(.move(edge: .top))
+            .animation(.spring())
         }
         
     }
