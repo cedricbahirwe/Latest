@@ -9,10 +9,27 @@ import SwiftUI
 
 typealias ConfigTabs = ConfigurationsView.Tabs
 
+struct AlertModel: Identifiable, Equatable {
+    let id = UUID()
+    var title: String 
+    var body: String
+    let type: String = "default"
+    let duration: Double = 3.0 // Time to be displayed in seconds
+
+}
+//extension AlertModel: ExpressibleByNilLiteral {
+//    init(nilLiteral: ()) {
+//        self.init(title: "", body: "", duration: 0)
+//    }
+//
+//
+//}
 class AppManagerViewModel: ObservableObject {
     @Published public var selectedHomeTab: Int = 1
     @Published public var showProfileView: Bool = false
     @Published public var showBookmarkView: Bool = false
+    
+    @Published public var alertData: AlertModel? = nil
     
     @Published var selectedHeaderTab: ConfigTabs = .foryou {
         didSet {
@@ -36,7 +53,7 @@ class AppManagerViewModel: ObservableObject {
     
     public func getNewsAPi() {
         GetRequest<NewsApiModel>(baseUrl: "https://newsapi.org/v2/everything?q=Apple&from=2021-05-20&sortBy=popularity&apiKey=ca03cd8413224a368bf14ebc23303c74", .other)
-            .get(completion: { [weak self] result in
+            .requestData { [weak self] result in
                 switch result {
                 case .success(let news):
                     DispatchQueue.main.async {
@@ -46,10 +63,10 @@ class AppManagerViewModel: ObservableObject {
                         }
                     }
                 case .failure(let error):
-                    
+                    self?.alertData = AlertModel(title: "News APi Error", body: error.localizedDescription)
                     print(error.localizedDescription)
                 }
-            })
+            }
     }
     
 }

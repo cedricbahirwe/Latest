@@ -45,7 +45,7 @@ struct GetRequest<ResponseStruct: Decodable>{
         print("Accessing: ", routeURL)
     }
     
-    func get(completion: @escaping(Result<ResponseStruct, LatestNetworkError>) -> Void){
+    func requestData(completion: @escaping(Result<ResponseStruct, LatestNetworkError>) -> Void){
         
         var request = URLRequest(url: routeURL)
         request.httpMethod = "GET"
