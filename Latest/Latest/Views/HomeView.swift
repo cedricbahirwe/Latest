@@ -9,16 +9,30 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var data: AppManagerViewModel
+    private var nextPageView: some View {
+        ProgressView()
+            .progressViewStyle(CircularProgressViewStyle(tint: .mainColor))
+            .scaleEffect(1.2)
+            
+            .frame(maxWidth: .infinity)
+            .frame(height: 30)
+            .onAppear() {
+                data.currentPage += 1
+            }
+    }
     var body: some View {
         VStack(spacing: 0) {
             NavBarView()
-            ScrollView {
-                VStack(spacing: 0) {
-                    TopHeaderView(news: .defaultTopNews)
-
-                    ForEach(data.allArticles, content: NewsRowView.init)
+            List {
+                TopHeaderView(news: .defaultTopNews)
+                
+                ForEach(data.allArticles, content: NewsRowView.init)
+                
+                if data.shouldDisplayNextPage {
+                    nextPageView
                 }
             }
+            .listStyle(PlainListStyle())
             .redacted(reason: data.allArticles.isEmpty ? .placeholder : [])
         }
         .onAppear(perform: data.getNewsAPi)

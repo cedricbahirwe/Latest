@@ -10,7 +10,12 @@ import SwiftUI
 struct NavBarView: View {
     @EnvironmentObject var data: AppManagerViewModel
     let bgColor: Color = Color.mainColor
-    private let title: String = "Latest"
+    private var title: String {
+        if data.allArticles.isEmpty == false {
+            return "\(data.allArticles.count) Latests"
+        }
+        return "Latest"
+    }
     
     var body: some View {
         HStack {
@@ -20,8 +25,15 @@ struct NavBarView: View {
                     data.showProfileView.toggle()
                 }
             Spacer()
-            Text("Latest")
-                .font(Font.title2.weight(.bold))
+            if data.isFetchingMore {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: Color(.lightGray)))
+                    .scaleEffect(1.3)
+            } else {
+                Text(title)
+                    .font(Font.title2.weight(.bold))
+                    .animation(.easeIn)
+            }
             Spacer()
             Image(systemName: "bookmark.circle")
                 .imageScale(.large)

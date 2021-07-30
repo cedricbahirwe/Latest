@@ -134,7 +134,7 @@
 				8233829A2626DC6400ACF0ED /* Views */,
 				8286B5E92627321400FAD7C2 /* Models */,
 				82FB4EA4262787680000E8DD /* ViewModels */,
-				82DCBBAD262ECB5500C1A03C /* Network */,
+				82DCBBAD262ECB5500C1A03C /* Networking */,
 				823382A02626DE7300ACF0ED /* Helpers */,
 				823382642626D58700ACF0ED /* Assets.xcassets */,
 				823382692626D58700ACF0ED /* Persistence.swift */,
@@ -175,7 +175,6 @@
 			isa = PBXGroup;
 			children = (
 				8233829B2626DC6B00ACF0ED /* HomeView.swift */,
-				823382AC2626E83700ACF0ED /* NewsRowView.swift */,
 				8213B074262705C000FE4D95 /* ConfigurationsView.swift */,
 				82A993C7262822B900562010 /* BookmarkedView.swift */,
 				82FB4E9F262780F60000E8DD /* ProfileView.swift */,
@@ -207,18 +206,19 @@
 		82D07E6A262828A9006E8029 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
+				823382AC2626E83700ACF0ED /* NewsRowView.swift */,
 				82D07E6B262828B3006E8029 /* SheetHeaderView.swift */,
 				82D07E7326282A82006E8029 /* NavBarView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
 		};
-		82DCBBAD262ECB5500C1A03C /* Network */ = {
+		82DCBBAD262ECB5500C1A03C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
 				82DCBBAE262ECB5E00C1A03C /* GetRequest.swift */,
 			);
-			path = Network;
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		82FB4EA4262787680000E8DD /* ViewModels */ = {

@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum LatestEndPoints {
     case apple
     case other
@@ -25,36 +24,45 @@ enum LatestNetworkError: Error {
     case unknownError(message: String)
     case serverError
     case unableToDecodeData
+    var message: String {
+        switch  self {
+        case .unknownError(let message):  return message
+        case .serverError: return "Unable to contact the server for the moment."
+        case .unableToDecodeData: return "We are currently facing an issue with the data."
+        }
+    }
+}
+struct NewsAPiError: Error, Decodable {
+    var message: String
 }
 struct GetRequest<ResponseStruct: Decodable>{
-    var routeUrl: URL
+    let routeURL: URL
     
-    init(baseUrl: String, _ routeString: LatestEndPoints){
-        guard let url =  URL(string: "\(baseUrl)\(routeString.endpoint)") else {
-            fatalError("BASE_URL_ERROR_MESSAGE")
+    init(baseUrl: String, _ path: LatestEndPoints){
+        guard let url =  URL(string: "\(baseUrl)\(path.endpoint)") else {
+            fatalError("Unable to convert the string to a valid url")
         }
-        self.routeUrl = url
+        routeURL = url
         
-        print("Hitting >>> ", self.routeUrl)
+        print("Accessing: ", routeURL)
     }
     
     init(_ fullRoutePath: String) {
         guard let url = URL(string: fullRoutePath) else {
-            fatalError("BASE_URL_ERROR_MESSAGE")
+            fatalError("Unable to convert the string to a valid url")
         }
-        self.routeUrl = url
-        print("Hitting >>> ", self.routeUrl)
-
+        routeURL = url
+        print("Accessing: ", routeURL)
     }
     
-    func get(completion: @escaping(Result<ResponseStruct, LatestNetworkError>) -> Void){
+    func requestData(completion: @escaping(Result<ResponseStruct, LatestNetworkError>) -> Void){
         
-        var request = URLRequest(url: self.routeUrl)
+        var request = URLRequest(url: routeURL)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
         let dataTask = URLSession.shared.dataTask(with: request){
-            responseBody, response, error in
+            data, response, error in
             
             if let error = error{
                 // Request failure is sent here with localized Description.
@@ -67,27 +75,31 @@ struct GetRequest<ResponseStruct: Decodable>{
                     return
                 }
                 if !(200...299).contains(response.statusCode){
-                    if let responseString = String(bytes: responseBody!, encoding: .utf8) {
+                    if let responseString = String(bytes: data!, encoding: .utf8) {
                         // The response body seems to be a valid UTF-8 string, so print that.
-                        completion(.failure(.unknownError(message: responseString)))
+                        
+                        let decoder = JSONDecoder()
+                        let data = try! decoder.decode(NewsAPiError.self, from: data!)
+                        print("cococo")
+                        completion(.failure(.unknownError(message: data.message)))
+//                        completion(.failure(.unknownError(message: responseString)))
                         print(responseString)
                     } else {
                         // Otherwise print a hex dump of the body.
                         completion(.failure(.serverError))
-                        print(responseBody! as NSData)
+                        print(data! as NSData)
                     }
-                } else{
-                    // Request is successful and we've gotten the data, we try to decode the data here
-                    do{
-                        if let json = try? JSONSerialization.jsonObject(with: responseBody!, options: []){
-                            print(json)
-                        }
+                } else {
+                    do {
                         let decoder = JSONDecoder()
-                        let data = try decoder.decode(ResponseStruct.self, from: responseBody!)
+                        let data = try decoder.decode(ResponseStruct.self, from: data!)
                         completion(.success(data))
                     } catch let error as NSError{
+                        if let jsonData = try? JSONSerialization.jsonObject(with: data!, options: []){
+                            print(jsonData)
+                        }
                         // If server's response structure is different from local structure, error occurs
-                        print("An error occured when trying to decode the data >>>", error.localizedDescription)
+                        print("Can not decode: ", error.localizedDescription)
                         completion(.failure(.unableToDecodeData))
                     }
                 }

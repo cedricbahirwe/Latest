@@ -10,16 +10,19 @@ import SwiftUI
 // Used for Grid Layout
 struct TopicsModeler {
     
-    var allTopics: [Topics]
-    var index: Int
-    init(allTopics: [Topics] = [Topics(values: [])], index: Int = 0) {
-        self.allTopics = allTopics
-        self.index = index
-        energize()
+    static let shared = TopicsModeler()
+    
+    var allTopics: [Topics] = []
+    var index: Int = 0
+    
+    init() {
+        allTopics = [Topics(values: [])]
+        index = 0
+        initializeTopics()
     }
     
-    mutating func energize() {
-        for topic in Topic.examples {
+    mutating func initializeTopics(_ topics: [Topic] = Topic.examples) {
+        for topic in topics {
             addTopic(topic)
         }
     }
@@ -40,7 +43,8 @@ struct TopicsModeler {
 
     private func topicsize(_ topic: Topic) -> CGFloat {
         let margins: CGFloat = 5
-        let emoji: CGFloat = 8
+        let emoji: CGFloat = 10
+        
         let paddings: CGFloat = 30
         return topic.title.widthOfString(usingFont: .systemFont(ofSize: 18, weight: .bold)) + margins + paddings + emoji
     }
@@ -52,9 +56,9 @@ struct Topics: Identifiable, Hashable {
 }
 
 struct Topic: Identifiable, Hashable {
-    var id = UUID()
-    var emoji: String
-    var title: String
+    let id = UUID()
+    let emoji: String
+    let title: String
     
     static let examples = [
         Topic(emoji: "💵", title: "Startups"),

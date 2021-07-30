@@ -144,7 +144,7 @@ extension ConfigurationsView {
         
         @State private var index: Int = 0
         @State private var selectedTopics =  Set<Topic>()
-        @State private var allTopics: [Topics] = TopicsModeler().allTopics
+        @State private var allTopics: [Topics] = TopicsModeler.shared.allTopics
         var body: some View {
             VStack {
                 Text("Subscribe to topics of interest to surface the stories you want to read")
@@ -164,14 +164,13 @@ extension ConfigurationsView {
                                             
                                             .foregroundColor(
                                                 selectedTopics.contains(topic) ?
-                                                    Color.white :
-                                                    Color.white
+                                                    .mainColor :
+                                                    .white
                                             )
                                         
                                     }
                                     .font(.system(size: 17, weight: .light))
-                                    .minimumScaleFactor(0.5)
-                                    .padding(.horizontal, 20)
+                                    .padding(.horizontal, selectedTopics.contains(topic) ? 15 : 18)
                                     .padding(.vertical, 13)
                                     .border(Color.systemWhite, width: 1)
                                     .background(
@@ -191,6 +190,8 @@ extension ConfigurationsView {
                                     }
                                 }
                             }
+                            .minimumScaleFactor(0.65)
+
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

@@ -64,7 +64,7 @@ struct NewsRowView: View {
                 }
             }
             .padding(10)
-            Color.secondary.frame(height: 1)
+//            Color.secondary.frame(height: 1)
         }
     }
 }
