@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 typealias ConfigTabs = ConfigurationsView.Tabs
 
 struct AlertModel: Identifiable, Equatable {
@@ -51,8 +53,33 @@ class AppManagerViewModel: ObservableObject {
     public let topics: [Topic] = Topic.examples
     
     
+    struct NewsApiQuery {
+        
+        private  let BaseUrl = "https://newsapi.org/v2/"
+        private let ApiKey = "117ed8864197464aac7e5f910a49fc77"
+        enum SortingKey: String { case popularity }
+
+        let filter = "everything?"
+        let term: String
+        let startDate: Date
+        let sorting: SortingKey
+        
+        var fullStringQuery: String {
+            BaseUrl + filter + "q=\(term)" + "&from=\(stringDate)" + "&sortBy=\(sorting.rawValue)"
+            + "&apiKey=\(ApiKey)"
+        }
+        private var stringDate: String {
+            let dateformatter = DateFormatter()
+            dateformatter.dateFormat = "YYYY-MM-dd"
+            return dateformatter.string(from: startDate)
+        }
+    }
+
+    
     public func getNewsAPi() {
-        GetRequest<NewsApiModel>(baseUrl: "https://newsapi.org/v2/everything?q=Apple&from=2021-05-20&sortBy=popularity&apiKey=ca03cd8413224a368bf14ebc23303c74", .other)
+//        "https://newsapi.org/v2/everything?q=Apple&from=2021-07-20&sortBy=popularity&apiKey=117ed8864197464aac7e5f910a49fc77"
+        let searchQuery = NewsApiQuery(term: "Apple", startDate: Date(timeIntervalSinceNow: -86400*10), sorting: .popularity)
+        GetRequest<NewsApiModel>(searchQuery.fullStringQuery)
             .requestData { [weak self] result in
                 switch result {
                 case .success(let news):
@@ -63,7 +90,10 @@ class AppManagerViewModel: ObservableObject {
                         }
                     }
                 case .failure(let error):
-                    self?.alertData = AlertModel(title: "News APi Error", body: error.localizedDescription)
+                    DispatchQueue.main.async {
+                        self?.alertData = AlertModel(title: "News APi Error", body: error.message)
+                    }
+                    
                     print(error.localizedDescription)
                 }
             }

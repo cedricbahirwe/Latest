@@ -65,11 +65,14 @@ struct ToastAlertView: View {
                     .font(.callout)
                     .foregroundColor(.secondary)
             }
-            Text("A simple title for the notification")
-                .fontWeight(.semibold)
-            Text("This is some somple comments about the notifications")
-                .font(.callout)
-                .lineLimit(1)
+            if let value = item  {
+                
+                Text(value.title)
+                    .fontWeight(.semibold)
+                Text(value.body)
+                    .font(.callout)
+                    .lineLimit(1)
+            }
         }
         .onChange(of: item, perform: { value in
             guard let value = value else { return }

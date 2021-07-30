@@ -24,6 +24,16 @@ enum LatestNetworkError: Error {
     case unknownError(message: String)
     case serverError
     case unableToDecodeData
+    var message: String {
+        switch  self {
+        case .unknownError(let message):  return message
+        case .serverError: return "Unable to contact the server for the moment."
+        case .unableToDecodeData: return "We are currently facing an issue with the data."
+        }
+    }
+}
+struct NewsAPiError: Error, Decodable {
+    var message: String
 }
 struct GetRequest<ResponseStruct: Decodable>{
     let routeURL: URL
@@ -67,7 +77,12 @@ struct GetRequest<ResponseStruct: Decodable>{
                 if !(200...299).contains(response.statusCode){
                     if let responseString = String(bytes: data!, encoding: .utf8) {
                         // The response body seems to be a valid UTF-8 string, so print that.
-                        completion(.failure(.unknownError(message: responseString)))
+                        
+                        let decoder = JSONDecoder()
+                        let data = try! decoder.decode(NewsAPiError.self, from: data!)
+                        print("cococo")
+                        completion(.failure(.unknownError(message: data.message)))
+//                        completion(.failure(.unknownError(message: responseString)))
                         print(responseString)
                     } else {
                         // Otherwise print a hex dump of the body.
