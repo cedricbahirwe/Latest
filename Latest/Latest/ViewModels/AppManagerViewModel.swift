@@ -17,7 +17,7 @@ struct AlertModel: Identifiable, Equatable {
     var body: String
     let type: String = "default"
     let duration: Double = 3.0 // Time to be displayed in seconds
-
+    
 }
 //extension AlertModel: ExpressibleByNilLiteral {
 //    init(nilLiteral: ()) {
@@ -33,6 +33,8 @@ class AppManagerViewModel: ObservableObject {
     
     @Published public var alertData: AlertModel? = nil
     
+    @Published public var isFetchingMore: Bool = false
+    
     @Published var selectedHeaderTab: ConfigTabs = .foryou {
         didSet {
             // Store locally
@@ -45,6 +47,7 @@ class AppManagerViewModel: ObservableObject {
         }
     }
     public var shouldDisplayNextPage: Bool {
+        // Limit for Developer account is 100 articles, 20 per page
         if allArticles.isEmpty == false, currentPage < 5 {
             return true
         }
@@ -72,7 +75,7 @@ class AppManagerViewModel: ObservableObject {
         private  let BaseUrl = "https://newsapi.org/v2/"
         private let ApiKey = "117ed8864197464aac7e5f910a49fc77"
         enum SortingKey: String { case popularity }
-
+        
         var page: Int = 1
         let filter = "everything?"
         let term: String
@@ -81,7 +84,7 @@ class AppManagerViewModel: ObservableObject {
         
         var fullStringQuery: String {
             BaseUrl + filter + "q=\(term)" + "&from=\(stringDate)" + "&sortBy=\(sorting.rawValue)"
-            + "&apiKey=\(ApiKey)" + "&page=\(page)"
+                + "&apiKey=\(ApiKey)" + "&page=\(page)"
         }
         private var stringDate: String {
             let dateformatter = DateFormatter()
@@ -89,18 +92,19 @@ class AppManagerViewModel: ObservableObject {
             return dateformatter.string(from: startDate)
         }
     }
-
+    
     
     public func getNewsAPi() {
         let fetchedpage = currentPage
-//        "https://newsapi.org/v2/everything?q=Apple&from=2021-07-20&sortBy=popularity&apiKey=117ed8864197464aac7e5f910a49fc77"
+        isFetchingMore = true
+        
         let searchQuery = NewsApiQuery(page: currentPage ,term: "Apple", startDate: Date(timeIntervalSinceNow: -86400*10), sorting: .popularity)
         GetRequest<NewsApiModel>(searchQuery.fullStringQuery)
             .requestData { [weak self] result in
-                switch result {
-                case .success(let news):
-                    DispatchQueue.main.async {
-                        print("loaded")
+                DispatchQueue.main.async {
+                    self?.isFetchingMore = false
+                    switch result {
+                    case .success(let news):
                         withAnimation {
                             if fetchedpage > 1 {
                                 self?.allArticles.append(contentsOf: news.articles)
@@ -108,14 +112,12 @@ class AppManagerViewModel: ObservableObject {
                                 self?.allArticles = news.articles
                             }
                         }
+                    case .failure(let error):
+                        self?.alertData = AlertModel(title: "News APi Error", body: error.message)                        
+                        print(error.localizedDescription)
                     }
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        self?.alertData = AlertModel(title: "News APi Error", body: error.message)
-                    }
-                    
-                    print(error.localizedDescription)
                 }
+                
             }
     }
     
@@ -166,5 +168,5 @@ extension AppManagerViewModel {
         }
         
     }
-
+    
 }
