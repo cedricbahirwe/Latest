@@ -38,6 +38,20 @@ class AppManagerViewModel: ObservableObject {
             // Store locally
         }
     }
+    
+    public var currentPage: Int  = 1 {
+        didSet {
+            getNewsAPi()
+        }
+    }
+    public var shouldDisplayNextPage: Bool {
+        if allArticles.isEmpty == false, currentPage < 5 {
+            return true
+        }
+        return false
+    }
+    
+    
     @Published public private(set) var allArticles: [NewsApiArticle] = []
     public var placeholders: [NewsApiArticle] = Array(repeating: NewsApiArticle(
                                                         source: NewsApiSource(
@@ -59,6 +73,7 @@ class AppManagerViewModel: ObservableObject {
         private let ApiKey = "117ed8864197464aac7e5f910a49fc77"
         enum SortingKey: String { case popularity }
 
+        var page: Int = 1
         let filter = "everything?"
         let term: String
         let startDate: Date
@@ -66,7 +81,7 @@ class AppManagerViewModel: ObservableObject {
         
         var fullStringQuery: String {
             BaseUrl + filter + "q=\(term)" + "&from=\(stringDate)" + "&sortBy=\(sorting.rawValue)"
-            + "&apiKey=\(ApiKey)"
+            + "&apiKey=\(ApiKey)" + "&page=\(page)"
         }
         private var stringDate: String {
             let dateformatter = DateFormatter()
@@ -77,8 +92,9 @@ class AppManagerViewModel: ObservableObject {
 
     
     public func getNewsAPi() {
+        let fetchedpage = currentPage
 //        "https://newsapi.org/v2/everything?q=Apple&from=2021-07-20&sortBy=popularity&apiKey=117ed8864197464aac7e5f910a49fc77"
-        let searchQuery = NewsApiQuery(term: "Apple", startDate: Date(timeIntervalSinceNow: -86400*10), sorting: .popularity)
+        let searchQuery = NewsApiQuery(page: currentPage ,term: "Apple", startDate: Date(timeIntervalSinceNow: -86400*10), sorting: .popularity)
         GetRequest<NewsApiModel>(searchQuery.fullStringQuery)
             .requestData { [weak self] result in
                 switch result {
@@ -86,7 +102,11 @@ class AppManagerViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         print("loaded")
                         withAnimation {
-                            self?.allArticles = news.articles
+                            if fetchedpage > 1 {
+                                self?.allArticles.append(contentsOf: news.articles)
+                            } else {
+                                self?.allArticles = news.articles
+                            }
                         }
                     }
                 case .failure(let error):
