@@ -58,13 +58,11 @@ struct NewsRowView: View {
                     } else {
                         Color.gray
                             .frame(width: 100, height: 60)
-                            .background(Color.gray)
                         
                     }
                 }
             }
             .padding(10)
-//            Color.secondary.frame(height: 1)
         }
     }
 }
