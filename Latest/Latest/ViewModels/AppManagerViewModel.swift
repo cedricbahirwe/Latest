@@ -5,27 +5,12 @@
 //  Created by Cédric Bahirwe on 14/04/2021.
 //
 
+import Foundation
 import SwiftUI
-
-
 
 typealias ConfigTabs = ConfigurationsView.Tabs
 
-struct AlertModel: Identifiable, Equatable {
-    let id = UUID()
-    var title: String 
-    var body: String
-    let type: String = "default"
-    let duration: Double = 3.0 // Time to be displayed in seconds
-    
-}
-//extension AlertModel: ExpressibleByNilLiteral {
-//    init(nilLiteral: ()) {
-//        self.init(title: "", body: "", duration: 0)
-//    }
-//
-//
-//}
+
 class AppManagerViewModel: ObservableObject {
     @Published public var selectedHomeTab: Int = 1
     @Published public var showProfileView: Bool = false
@@ -43,7 +28,7 @@ class AppManagerViewModel: ObservableObject {
     
     public var currentPage: Int  = 1 {
         didSet {
-            getNewsAPi()
+            getAllNews()
         }
     }
     public var shouldDisplayNextPage: Bool {
@@ -55,14 +40,12 @@ class AppManagerViewModel: ObservableObject {
     }
     
     
+    @Published public private(set) var headLines: [NewsApiArticle] = []
+    
     @Published public private(set) var allArticles: [NewsApiArticle] = []
     public var placeholders: [NewsApiArticle] = Array(repeating: NewsApiArticle(
-                                                        source: NewsApiSource(
-                                                            source: nil,
-                                                            name: nil),
-                                                        author: nil,
-                                                        urlToImage: nil),
-                                                      count: 10)
+                                                        source: NewsApiSource(source: nil,  name: nil),
+                                                        author: nil, urlToImage: nil), count: 10)
     @Published public private(set) var bookmarkedNews: [NewsApiArticle] = []
     
     
@@ -70,50 +53,51 @@ class AppManagerViewModel: ObservableObject {
     public let topics: [Topic] = Topic.examples
     
     
-    struct NewsApiQuery {
-        
-        private  let BaseUrl = "https://newsapi.org/v2/"
-        private let ApiKey = "117ed8864197464aac7e5f910a49fc77"
-        enum SortingKey: String { case popularity }
-        
-        var page: Int = 1
-        let filter = "everything?"
-        let term: String
-        let startDate: Date
-        let sorting: SortingKey
-        
-        var fullStringQuery: String {
-            BaseUrl + filter + "q=\(term)" + "&from=\(stringDate)" + "&sortBy=\(sorting.rawValue)"
-                + "&apiKey=\(ApiKey)" + "&page=\(page)"
-        }
-        private var stringDate: String {
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "YYYY-MM-dd"
-            return dateformatter.string(from: startDate)
-        }
-    }
     
     
-    public func getNewsAPi() {
-        let fetchedpage = currentPage
+    public func getAllNews() {
         isFetchingMore = true
+        let fetchedpage = currentPage
         
-        let searchQuery = NewsApiQuery(page: currentPage ,term: "Apple", startDate: Date(timeIntervalSinceNow: -86400*10), sorting: .popularity)
-        GetRequest<NewsApiModel>(searchQuery.fullStringQuery)
+        let weekAgoDate = Date(timeIntervalSinceNow: -86400*10)
+        let everythingQuery = NewsApiQuery(term: "Apple", filter: .everything, sorting: .popularity,
+                                           startDate: weekAgoDate)
+
+        GetRequest<NewsApiModel>(everythingQuery.fullStringQuery)
             .requestData { [weak self] result in
                 DispatchQueue.main.async {
                     self?.isFetchingMore = false
                     switch result {
                     case .success(let news):
-                        withAnimation {
-                            if fetchedpage > 1 {
-                                self?.allArticles.append(contentsOf: news.articles)
-                            } else {
-                                self?.allArticles = news.articles
-                            }
+                        if fetchedpage > 1 {
+                            self?.allArticles.append(contentsOf: news.articles)
+                        } else {
+                            self?.allArticles = news.articles
                         }
                     case .failure(let error):
                         self?.alertData = AlertModel(title: "News APi Error", body: error.message)                        
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+    }
+    
+    public func getHeadLines() {
+        isFetchingMore = true
+        let date = Date(timeIntervalSinceNow: -86400*10)
+        let topHealine = NewsApiQuery(term: "Apple", filter: .topHeadlines,
+                                      sorting: .popularity, startDate: date,
+                                      topheadLine: .country(iso: "us"))
+        GetRequest<NewsApiModel>(topHealine.fullStringQuery)
+            .requestData { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.isFetchingMore = false
+                    switch result {
+                    case .success(let news):
+                        print(news.articles.first)
+                        self?.headLines = news.articles
+                    case .failure(let error):
+                        self?.alertData = AlertModel(title: "Headlines Updates", body: error.message)
                         print(error.localizedDescription)
                     }
                 }

@@ -87,7 +87,6 @@ struct ToastAlertView: View {
         .background(Color(.secondarySystemGroupedBackground).ignoresSafeArea())
         .cornerRadius(12)
         .padding(.horizontal, 10)
-        .opacity(item != nil ? 1 : 0)
         .offset(y: item != nil ? 0 : -100-(UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0))
         .transition(.move(edge: .top))
         .animation(.spring())
