@@ -94,7 +94,6 @@ class AppManagerViewModel: ObservableObject {
                     self?.isFetchingMore = false
                     switch result {
                     case .success(let news):
-                        print(news.articles.first)
                         self?.headLines = news.articles
                     case .failure(let error):
                         self?.alertData = AlertModel(title: "Headlines Updates", body: error.message)

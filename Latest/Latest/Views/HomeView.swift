@@ -59,53 +59,48 @@ extension HomeView {
     
     struct TopHeaderView: View {
         let news: NewsApiArticle
-        let width = UIScreen.main.bounds.size.width
         var body: some View {
-            GeometryReader { geo in
-                ZStack(alignment: .bottomLeading) {
+            ZStack {
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Security")
+                        .textCase(.uppercase)
+                        .font(Font.caption.weight(.semibold))
+                        .foregroundColor(Color.systemWhite.opacity(0.8))
+                    Text(news.title)
+                        .font(Font.title3.bold())
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.75)
+                    HStack(spacing: 5) {
+                        if let author = news.author {
+                            Text("By \(author)")
+                            Color.systemWhite
+                                .frame(width: 5, height: 5)
+                        }
+                        Text(news.timesAgo)
+                        
+                    }
+                    .font(Font.caption2.weight(.light))
+                    
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color.mainColor.opacity(0.6))
+                .frame(height: 220, alignment: .bottom)
+            }
+            .background(
+                ZStack {
                     if let imageurl = news.urlToImage {
                         RemoteImage(url: imageurl)
                             .scaledToFill()
                             .clipped()
-                        
-                    } else {
-                        Color.gray
                     }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Security")
-                            .textCase(.uppercase)
-                            .font(Font.caption.weight(.semibold))
-                            .foregroundColor(Color.systemWhite.opacity(0.8))
-                        Text(news.title)
-                            .font(Font.title3.bold())
-                            .lineLimit(3)
-                            .minimumScaleFactor(0.75)
-                        HStack(spacing: 5) {
-                            if let author = news.author {
-                                Text("By \(author)")
-                                Color.systemWhite
-                                    .frame(width: 5, height: 5)
-                            }
-                            Text(news.timesAgo)
-                            
-                        }
-                        .font(Font.caption2.weight(.light))
-                        
-                    }
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color.mainColor.opacity(0.6))
-                    
                 }
-            }
+            )
             .background(Color.mainColor.opacity(0.3))
-            .frame(height: 200, alignment: .bottom)
-            .clipped()
-            
             
         }
     }
-
+    
 }
