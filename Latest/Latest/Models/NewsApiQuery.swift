@@ -10,22 +10,14 @@ import Foundation
 
 struct NewsApiQuery {
     static let APIKey = "117ed8864197464aac7e5f910a49fc77"
-    static var stringPath = "https://newsapi.org/v2/"
-    static var BaseUrl = URL(string: stringPath)!
+    private let BasePath: String
+    
+    private(set) var request: URLComponents
     
     init(api: LatestEndPoints.NewsAPI) {
         let defaultPath = api.rawValue + "?"
-        configureDefault(defaultPath)
-        
-    }
-    private(set) var request = URLComponents(string: stringPath)!
-    
-    
-    mutating func configureDefault(_ basePath: String) {
-        NewsApiQuery.stringPath +=  basePath
-        NewsApiQuery.BaseUrl = URL(string: NewsApiQuery.stringPath)!
-        request = URLComponents(string: NewsApiQuery.stringPath)!
-
+        BasePath = "https://newsapi.org/v2/" +  defaultPath
+        request = URLComponents(string: BasePath)!
     }
     
     enum SortingKey: String { case popularity }
@@ -40,7 +32,6 @@ struct NewsApiQuery {
             case term = "q"
             case APIKey = "apiKey"
         }
-        
     }
     
 }
@@ -83,4 +74,3 @@ extension NewsApiQuery {
 //        request.percentEncodedQuery = request.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
     }
 }
-

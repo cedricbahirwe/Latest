@@ -14,7 +14,7 @@ typealias ConfigTabs = ConfigurationsView.Tabs
 class AppManagerViewModel: ObservableObject {
     
     private let weekAgoDate = Date(timeIntervalSinceNow: -86400*10)
-
+    
     @Published public var selectedHomeTab: Int = 1
     @Published public var showProfileView: Bool = false
     @Published public var showBookmarkView: Bool = false
@@ -62,15 +62,14 @@ class AppManagerViewModel: ObservableObject {
         isFetchingMore = true
         let fetchedpage = currentPage
         
-        var query = NewsApiQuery(api: .everything)
-        query.addHeaders([
+        var allNewsquery = NewsApiQuery(api: .everything)
+        allNewsquery.addHeaders([
             .term("Apple"),
             .sort(by: .popularity),
             .from(weekAgoDate),
         ])
-        print(query.request.description)
         GetRequest<NewsApiModel>
-            .requestDatum(request: query.request) { [weak self] result in
+            .requestDatum(request: allNewsquery.request) { [weak self] result in
                 DispatchQueue.main.async {
                     self?.isFetchingMore = false
                     switch result {
@@ -94,9 +93,6 @@ class AppManagerViewModel: ObservableObject {
         
         var topHeadlinesQuery = NewsApiQuery(api: .topheadLines)
         topHeadlinesQuery.addHeaders([
-            .term("Apple"),
-            .sort(by: .popularity),
-            .from(weekAgoDate),
             .country("us")
         ])
         
@@ -112,10 +108,8 @@ class AppManagerViewModel: ObservableObject {
                         print(error.message)
                     }
                 }
-                
             }
     }
-    
 }
 
 // MARK: - Logic Methods
