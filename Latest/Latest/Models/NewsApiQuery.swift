@@ -9,53 +9,78 @@ import Foundation
 
 
 struct NewsApiQuery {
+    static let APIKey = "117ed8864197464aac7e5f910a49fc77"
+    static var stringPath = "https://newsapi.org/v2/"
+    static var BaseUrl = URL(string: stringPath)!
     
-    private  let BaseUrl = "https://newsapi.org/v2/"
-    private let ApiKey = "117ed8864197464aac7e5f910a49fc77"
+    init(api: LatestEndPoints.NewsAPI) {
+        let defaultPath = api.rawValue + "?"
+        configureDefault(defaultPath)
+        
+    }
+    private(set) var request = URLComponents(string: stringPath)!
+    
+    
+    mutating func configureDefault(_ basePath: String) {
+        NewsApiQuery.stringPath +=  basePath
+        NewsApiQuery.BaseUrl = URL(string: NewsApiQuery.stringPath)!
+        request = URLComponents(string: NewsApiQuery.stringPath)!
+
+    }
+    
     enum SortingKey: String { case popularity }
-    enum TopHeadLineCategory: Equatable {
+    struct NewsAPIHeader {
+        let value: String
+        let key: HeaderKey
         
-        case country(iso: String), source(src: String)
-        
-        var value: String {
-            switch self {
-            case .country(let iso):
-                return iso.description
-            case .source(let src):
-                return src
-            }
+        typealias Keys = HeaderKey
+        enum HeaderKey: String {
+            case sortBy, from, country, page
+            
+            case term = "q"
+            case APIKey = "apiKey"
         }
         
     }
     
-    enum FilteringKey: String { case everything, topHeadlines = "top-headlines" }
-    
-    let term: String
-    let filter: FilteringKey
-    let sorting: SortingKey?
-    let startDate: Date
-    var page: Int = 1
-    
-    var topheadLine: TopHeadLineCategory? = nil
-    
-    private func getEverythingQuery() -> String {
-        basePath + "q=\(term.replacingOccurrences(of: " ", with: "-"))" + "&from=\(stringDate)" + "&sortBy=\(sorting!.rawValue)" + "&apiKey=\(ApiKey)" + "&page=\(page)"
-    }
-    
-    private func getTopheadLinesQuery(by category: TopHeadLineCategory) -> String {
-        let middlePath = category == .country(iso: category.value) ? "country" : "sources"
-        return basePath + "\(middlePath)=\(category.value)" + "&apiKey=\(ApiKey)" + "&page=\(page)"
-    }
-    
-    private var basePath: String {
-        BaseUrl + "\(filter.rawValue)?"
-    }
-    var fullStringQuery: String {
-       (topheadLine == nil && filter == .everything) ?  getEverythingQuery() : getTopheadLinesQuery(by: topheadLine!)
-    }
-    private var stringDate: String {
+}
+
+extension Date {
+    var yyyyMMdd: String {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "YYYY-MM-dd"
-        return dateformatter.string(from: startDate)
+        return dateformatter.string(from: self)
     }
 }
+extension NewsApiQuery.NewsAPIHeader {
+    public static func sort(by type: NewsApiQuery.SortingKey) -> Self {
+        .init(value: type.rawValue, key: .sortBy)
+    }
+    public static func from(_ date: Date) -> Self {
+        .init(value: date.yyyyMMdd, key: .from)
+    }
+    public static func term(_ q: String) -> Self {
+        .init(value: q, key: .term)
+    }
+    public static func country(_ iso: String) -> Self {
+        .init(value: iso, key: .country)
+    }
+    public static func apiKey(_ value: String) -> Self {
+        .init(value: value, key: .APIKey)
+    }
+    
+    public static func page(_ value: String) -> Self {
+        .init(value: value, key: .page)
+    }
+}
+extension NewsApiQuery {
+    public mutating func addHeaders(_ headers: [NewsAPIHeader]) {
+        request.queryItems = headers.map { .init(name: $0.key.rawValue, value: $0.value) }
+        let apiKey = URLQueryItem(name: NewsAPIHeader.Keys.APIKey.rawValue, value: Self.APIKey)
+        request.queryItems?.append(apiKey)
+
+        // More Info on : https://stackoverflow.com/questions/27723912/swift-get-request-with-parameters
+//        request.percentEncodedQuery = request.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+    }
+}
+

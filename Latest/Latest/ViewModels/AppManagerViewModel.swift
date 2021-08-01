@@ -12,6 +12,9 @@ typealias ConfigTabs = ConfigurationsView.Tabs
 
 
 class AppManagerViewModel: ObservableObject {
+    
+    private let weekAgoDate = Date(timeIntervalSinceNow: -86400*10)
+
     @Published public var selectedHomeTab: Int = 1
     @Published public var showProfileView: Bool = false
     @Published public var showBookmarkView: Bool = false
@@ -59,24 +62,28 @@ class AppManagerViewModel: ObservableObject {
         isFetchingMore = true
         let fetchedpage = currentPage
         
-        let weekAgoDate = Date(timeIntervalSinceNow: -86400*10)
-        let everythingQuery = NewsApiQuery(term: "Apple", filter: .everything, sorting: .popularity,
-                                           startDate: weekAgoDate)
-
-        GetRequest<NewsApiModel>(everythingQuery.fullStringQuery)
-            .requestData { [weak self] result in
+        var query = NewsApiQuery(api: .everything)
+        query.addHeaders([
+            .term("Apple"),
+            .sort(by: .popularity),
+            .from(weekAgoDate),
+        ])
+        print(query.request.description)
+        GetRequest<NewsApiModel>
+            .requestDatum(request: query.request) { [weak self] result in
                 DispatchQueue.main.async {
                     self?.isFetchingMore = false
                     switch result {
                     case .success(let news):
+                        print("Got them data")
                         if fetchedpage > 1 {
                             self?.allArticles.append(contentsOf: news.articles)
                         } else {
                             self?.allArticles = news.articles
                         }
                     case .failure(let error):
-                        self?.alertData = AlertModel(title: "News APi Error", body: error.message)                        
-                        print(error.localizedDescription)
+                        self?.alertData = AlertModel(title: "News APi Error", body: error.message)
+                        print(error.message)
                     }
                 }
             }
@@ -84,12 +91,17 @@ class AppManagerViewModel: ObservableObject {
     
     public func getHeadLines() {
         isFetchingMore = true
-        let date = Date(timeIntervalSinceNow: -86400*10)
-        let topHealine = NewsApiQuery(term: "Apple", filter: .topHeadlines,
-                                      sorting: .popularity, startDate: date,
-                                      topheadLine: .country(iso: "us"))
-        GetRequest<NewsApiModel>(topHealine.fullStringQuery)
-            .requestData { [weak self] result in
+        
+        var topHeadlinesQuery = NewsApiQuery(api: .topheadLines)
+        topHeadlinesQuery.addHeaders([
+            .term("Apple"),
+            .sort(by: .popularity),
+            .from(weekAgoDate),
+            .country("us")
+        ])
+        
+        GetRequest<NewsApiModel>
+            .requestDatum(request: topHeadlinesQuery.request) { [weak self] result in
                 DispatchQueue.main.async {
                     self?.isFetchingMore = false
                     switch result {
@@ -97,7 +109,7 @@ class AppManagerViewModel: ObservableObject {
                         self?.headLines = news.articles
                     case .failure(let error):
                         self?.alertData = AlertModel(title: "Headlines Updates", body: error.message)
-                        print(error.localizedDescription)
+                        print(error.message)
                     }
                 }
                 

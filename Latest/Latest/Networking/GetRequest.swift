@@ -8,18 +8,13 @@
 import Foundation
 
 enum LatestEndPoints {
-    case apple
-    case other
     
-    var endpoint: String {
-        switch self {
-        case .apple:
-            return ""
-        default:
-            return ""
-        }
+    enum NewsAPI: String {
+        case everything = "everything"
+        case topheadLines = "top-headlines"
     }
 }
+
 enum LatestNetworkError: Error {
     case unknownError(message: String)
     case serverError
@@ -32,29 +27,16 @@ enum LatestNetworkError: Error {
         }
     }
 }
+
+
 struct NewsAPiError: Error, Decodable {
     var message: String
 }
 struct GetRequest<ResponseStruct: Decodable>{
     let routeURL: URL
     
-    init(baseUrl: String, _ path: LatestEndPoints){
-        guard let url =  URL(string: "\(baseUrl)\(path.endpoint)") else {
-            fatalError("Unable to convert the string to a valid url")
-        }
-        routeURL = url
-        
-        print("Accessing: ", routeURL)
-    }
     
-    init(_ fullRoutePath: String) {
-        guard let url = URL(string: fullRoutePath) else {
-            fatalError("Unable to convert the string to a valid url")
-        }
-        routeURL = url
-        print("Accessing: ", routeURL)
-    }
-    
+
     func requestData(completion: @escaping(Result<ResponseStruct, LatestNetworkError>) -> Void){
         
         var request = URLRequest(url: routeURL)
@@ -64,42 +46,33 @@ struct GetRequest<ResponseStruct: Decodable>{
         let dataTask = URLSession.shared.dataTask(with: request){
             data, response, error in
             
-            if let error = error{
-                // Request failure is sent here with localized Description.
-                // Bad request and internet failures or unreachable server often exits here
+            if let error = error {
                 completion(.failure(.unknownError(message: error.localizedDescription)))
-            } else{
-                // convert the response to httpUrlResponse
+            } else {
                 guard let response = response as? HTTPURLResponse else {
                     completion(.failure(.serverError))
                     return
                 }
-                if !(200...299).contains(response.statusCode){
-                    if let responseString = String(bytes: data!, encoding: .utf8) {
-                        // The response body seems to be a valid UTF-8 string, so print that.
-                        
-                        let decoder = JSONDecoder()
+                let decoder = JSONDecoder()
+
+                if !(200...299).contains(response.statusCode) {
+                    if let _ = String(bytes: data!, encoding: .utf8) {
                         let data = try! decoder.decode(NewsAPiError.self, from: data!)
-                        print("cococo")
                         completion(.failure(.unknownError(message: data.message)))
-//                        completion(.failure(.unknownError(message: responseString)))
-                        print(responseString)
                     } else {
-                        // Otherwise print a hex dump of the body.
                         completion(.failure(.serverError))
                         print(data! as NSData)
                     }
                 } else {
                     do {
-                        let decoder = JSONDecoder()
                         let data = try decoder.decode(ResponseStruct.self, from: data!)
                         completion(.success(data))
                     } catch let error as NSError{
                         if let jsonData = try? JSONSerialization.jsonObject(with: data!, options: []){
                             print(jsonData)
+                        } else {
+                            print("Can not decode: ", error.localizedDescription)
                         }
-                        // If server's response structure is different from local structure, error occurs
-                        print("Can not decode: ", error.localizedDescription)
                         completion(.failure(.unableToDecodeData))
                     }
                 }
@@ -107,4 +80,52 @@ struct GetRequest<ResponseStruct: Decodable>{
         }
         dataTask.resume()
     }
+    
+    static func requestDatum(request: URLComponents, completion: @escaping(Result<ResponseStruct, LatestNetworkError>) -> Void){
+        var request =  URLRequest(url: request.url!)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let dataTask = URLSession.shared.dataTask(with: request){
+            data, response, error in
+            
+            if let error = error {
+                completion(.failure(.unknownError(message: error.localizedDescription)))
+            } else {
+                guard let response = response as? HTTPURLResponse else {
+                    completion(.failure(.serverError))
+                    return
+                }
+                let decoder = JSONDecoder()
+
+                if !(200...299).contains(response.statusCode) {
+                    if let _ = String(bytes: data!, encoding: .utf8) {
+                        let data = try? decoder.decode(NewsAPiError.self, from: data!)
+                        completion(.failure(.unknownError(message: data!.message)))
+                    } else {
+                        completion(.failure(.serverError))
+                        print(data! as NSData)
+                    }
+                } else {
+                    do {
+                        let data = try decoder.decode(ResponseStruct.self, from: data!)
+                        completion(.success(data))
+                    } catch let error as NSError{
+                        if let jsonData = try? JSONSerialization.jsonObject(with: data!, options: []){
+                            print(jsonData)
+                        } else {
+                            print("Can not decode: ", error.localizedDescription)
+                        }
+                        completion(.failure(.unableToDecodeData))
+                    }
+                }
+            }
+        }
+        dataTask.resume()
+    }
+}
+
+
+extension URLRequest {
+    
 }
