@@ -34,15 +34,18 @@ struct HomeView: View {
             List {
                 TopHeaderView(news: headLine)
                     .onAppear(perform: data.getHeadLines)
+                    .redacted(reason: data.headLines.isEmpty ? .placeholder : [])
                 
                 ForEach(articles, content: NewsRowView.init)
+                    .redacted(reason: data.allArticles.isEmpty ? .placeholder : [])
                 
                 if data.shouldDisplayNextPage {
                     nextPageView
                 }
             }
             .listStyle(PlainListStyle())
-            .redacted(reason: data.allArticles.isEmpty ? .placeholder : [])
+
+            
         }
         .onAppear(perform: data.getAllNews)
     }
