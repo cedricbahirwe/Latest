@@ -72,6 +72,8 @@ struct NewsRowView: View {
                                 .background(Color.mainColor)
                                 .clipShape(Capsule())
                                 .foregroundColor(.white)
+                                .frame(maxWidth: 250)
+                            Spacer()
                                 
                         }
                         .font(.caption2.weight(.light))
