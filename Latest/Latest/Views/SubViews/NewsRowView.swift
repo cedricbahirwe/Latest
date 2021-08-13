@@ -13,23 +13,6 @@ struct NewsRowView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading) {
-                HStack {
-                    Text("Security")
-                        .foregroundColor(.green)
-                        .textCase(.uppercase)
-                        .font(Font.caption.weight(.semibold))
-                    
-                    Spacer()
-                    Image(systemName: data.isBookMarked(news) ? "bookmark.fill" : "bookmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 18, height: 18, alignment: .trailing)
-                        .foregroundColor(data.isBookMarked(news) ? .mainColor : .gray)
-                        .onTapGesture {
-                            data.updateBookmarks(news)
-                        }
-                    
-                }
                 HStack(alignment: .top, spacing: 20) {
                     VStack(alignment: .leading) {
                         Text(news.title)
@@ -48,20 +31,55 @@ struct NewsRowView: View {
                     }
                     Spacer()
                     
-                    if let imageurl = news.urlToImage {
-                        RemoteImage(url: imageurl)
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 100, height: 60)
-                            .clipped()
-                            .background(Color.gray)
+                    
+                    VStack(alignment: .trailing) {
+                        Image(systemName: data.isBookMarked(news) ? "bookmark.fill" : "bookmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18, alignment: .trailing)
+                            .foregroundColor(data.isBookMarked(news) ? .mainColor : .gray)
+                            .onTapGesture {
+                                data.updateBookmarks(news)
+                            }
                         
-                    } else {
-                        Color.gray
-                            .frame(width: 100, height: 60)
-                        
+                        if let imageurl = news.urlToImage {
+                            RemoteImage(url: imageurl)
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 100, height: 60)
+                                .clipped()
+                                .background(Color.gray)
+                            
+                        } else {
+                            Color.gray
+                                .frame(width: 100, height: 60)
+                            
+                        }
                     }
                 }
             }
+            .padding(.bottom, 30)
+            .overlay(
+                
+                Group {
+                    if let url = URL(string: news.url) {
+                        HStack(spacing: 5) {
+                            Text("Read More:")
+                                .fontWeight(.semibold)
+                                
+                            Link(news.url, destination: url)
+                                .lineLimit(1)
+                                .padding(6)
+                                .background(Color.mainColor)
+                                .clipShape(Capsule())
+                                .foregroundColor(.white)
+                                
+                        }
+                        .font(.caption2.weight(.light))
+                        
+                    }
+                }, alignment: .bottom
+                
+            )
             .padding(10)
         }
     }

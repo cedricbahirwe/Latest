@@ -46,7 +46,7 @@ struct RemoteImage: View {
             .resizable()
     }
 
-    init(url: String, loading: Image = Image("placeholder"), failure: Image = Image(systemName: "multiply.circle")) {
+    init(url: String, loading: Image = Image("placeholder"), failure: Image = Image("placeholder")) {
         _loader = StateObject(wrappedValue: Loader(url: url))
         self.loading = loading
         self.failure = failure
