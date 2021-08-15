@@ -72,7 +72,7 @@ struct NewsRowView: View {
                                 .background(Color.mainColor)
                                 .clipShape(Capsule())
                                 .foregroundColor(.white)
-                                .frame(maxWidth: 250)
+                                .frame(maxWidth: 200)
                             Spacer()
                                 
                         }
